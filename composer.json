@@ -1,0 +1,22 @@
+{
+    "name": "qce/wordpress-bundle",
+    "description": "Integrates WordPress into Symfony.",
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Qce\\WordPressBundle\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Qce\\WordPressBundle\\Tests\\": "tests/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Louis Boulagnon",
+            "email": "louis@la-quincaillerie.fr"
+        }
+    ]
+}
