@@ -18,5 +18,11 @@
             "name": "Louis Boulagnon",
             "email": "louis@la-quincaillerie.fr"
         }
-    ]
+    ],
+    "require-dev": {
+        "phpstan/phpstan": "^1.2",
+        "phpstan/extension-installer": "^1.1",
+        "phpstan/phpstan-symfony": "^1.0",
+        "phpstan/phpstan-phpunit": "^1.0"
+    }
 }
