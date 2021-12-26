@@ -9,11 +9,16 @@
             "email": "louis@la-quincaillerie.fr"
         }
     ],
+    "require": {
+        "symfony/config": "^6.0",
+        "symfony/dependency-injection": "^6.0"
+    },
     "require-dev": {
         "phpstan/extension-installer": "^1.1",
         "phpstan/phpstan": "^1.2",
         "phpstan/phpstan-phpunit": "^1.0",
         "phpstan/phpstan-symfony": "^1.0",
+        "roave/security-advisories": "dev-latest",
         "symfony/phpunit-bridge": "^6.0"
     },
     "autoload": {
