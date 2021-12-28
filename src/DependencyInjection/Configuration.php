@@ -22,9 +22,21 @@ class Configuration implements ConfigurationInterface
             ->end()
         ;
 
+        $this->addExtraConstantsSection($rootNode);
         $this->addDatabaseSection($rootNode);
 
         return $treeBuilder;
+    }
+
+    private function addExtraConstantsSection(ArrayNodeDefinition $rootNode): void
+    {
+        $rootNode
+            ->fixXmlConfig('constant')
+            ->children()
+                ->arrayNode('constants')
+                    ->normalizeKeys(false)
+                    ->scalarPrototype()
+        ;
     }
 
     private function addDatabaseSection(ArrayNodeDefinition $rootNode): void

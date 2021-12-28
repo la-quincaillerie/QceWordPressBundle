@@ -7,6 +7,7 @@ use Qce\WordPressBundle\DependencyInjection\QceWordPressExtension;
 use Qce\WordPressBundle\WordPress\Constant\ConstantManagerInterface;
 use Qce\WordPressBundle\WordPress\Constant\ConstantProviderInterface;
 use Qce\WordPressBundle\WordPress\Constant\DatabaseConstantProvider;
+use Qce\WordPressBundle\WordPress\Constant\ConstantProvider;
 use Qce\WordPressBundle\WordPress\Constant\URLConstantProvider;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -32,12 +33,17 @@ class QceWordPressExtensionTest extends TestCase
     /**
      * @param class-string $serviceClass
      * @param array<string, mixed> $constants
+     * @param array<string, mixed> $extraConfig
      *
      * @dataProvider getConstantProviders
      */
-    public function testContantProviderResult(string $serviceName, string $serviceClass, array $constants): void
+    public function testContantProviderResult(string $serviceName, string $serviceClass, array $constants, array $extraConfig = []): void
     {
-        $this->extension->load(self::DEFAULT_CONFIGS, $this->container);
+        $configs = self::DEFAULT_CONFIGS;
+        if(!empty($extraConfig)){
+            $configs[] = $extraConfig;
+        }
+        $this->extension->load($configs, $this->container);
         $serviceId = 'qce_wordpress.constant_providers.' . $serviceName;
         self::assertTrue($this->container->has($serviceId));
         self::assertTrue($this->container->findDefinition($serviceId)->hasTag('qce_wordpress.constant_provider'));
@@ -49,7 +55,7 @@ class QceWordPressExtensionTest extends TestCase
     }
 
     /**
-     * @return array{string, class-string, array<string, mixed>}[]
+     * @return array{string, class-string, array<string, mixed>, 3?:array<string, mixed>}[]
      */
     public function getConstantProviders(): array
     {
@@ -66,7 +72,20 @@ class QceWordPressExtensionTest extends TestCase
                 'WP_HOME' => 'https://localhost',
                 'WP_SITEURL' => 'https://localhost/wp',
             ]],
+            ['extra', ConstantProvider::class, [
+                'EXTRA_1' => 'extra_1',
+                'EXTRA_2' => 'extra_2'
+            ], ['constants' => [
+                'EXTRA_1' => 'extra_1',
+                'EXTRA_2' => 'extra_2'
+            ]]]
         ];
+    }
+
+    public function testNoExtraConstantProvider(): void
+    {
+        $this->extension->load(self::DEFAULT_CONFIGS, $this->container);
+        self::assertFalse($this->container->has('qce_wordpress.constant_providers.extra'));
     }
 
     public function testAutowiredConstantProviders(): void

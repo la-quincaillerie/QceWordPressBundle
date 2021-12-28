@@ -3,6 +3,7 @@
 namespace Qce\WordPressBundle\DependencyInjection;
 
 use Qce\WordPressBundle\WordPress\Constant\ConstantProviderInterface;
+use Qce\WordPressBundle\WordPress\Constant\ConstantProvider;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -28,6 +29,11 @@ class QceWordPressExtension extends Extension
     {
         $container->getDefinition('qce_wordpress.constant_providers.database')->setArguments([$config['db']]);
         $container->getDefinition('qce_wordpress.constant_providers.url')->setArguments([$config['home'], $config['site_url']]);
+        if (!empty($config['constants'])) {
+            $container->register('qce_wordpress.constant_providers.extra', ConstantProvider::class)
+                ->setArguments([$config['constants']])
+                ->addTag('qce_wordpress.constant_provider', ['priority' => -10]);
+        }
 
         $container->registerForAutoconfiguration(ConstantProviderInterface::class)->addTag('qce_wordpress.constant_provider');
     }
