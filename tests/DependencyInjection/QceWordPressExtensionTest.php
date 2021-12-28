@@ -7,6 +7,7 @@ use Qce\WordPressBundle\DependencyInjection\QceWordPressExtension;
 use Qce\WordPressBundle\WordPress\Constant\ConstantManagerInterface;
 use Qce\WordPressBundle\WordPress\Constant\ConstantProviderInterface;
 use Qce\WordPressBundle\WordPress\Constant\DatabaseConstantProvider;
+use Qce\WordPressBundle\WordPress\Constant\URLConstantProvider;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class QceWordPressExtensionTest extends TestCase
@@ -42,6 +43,18 @@ class QceWordPressExtensionTest extends TestCase
             'DB_CHARSET' => 'utf8mb4',
             'DB_COLLATE' => '',
         ], $this->container->get('qce_wordpress.constant_providers.database')->getConstants());
+    }
+
+    public function testURLConstantProviderService(): void
+    {
+        $this->extension->load(self::DEFAULT_CONFIGS, $this->container);
+        self::assertTrue($this->container->has('qce_wordpress.constant_providers.url'));
+        self::assertInstanceOf(URLConstantProvider::class, $this->container->get('qce_wordpress.constant_providers.url'));
+        self::assertTrue($this->container->findDefinition('qce_wordpress.constant_providers.url')->hasTag('qce_wordpress.constant_provider'));
+        self::assertEquals([
+            'WP_HOME' => 'https://localhost',
+            'WP_SITEURL' => 'https://localhost/wp',
+        ], $this->container->get('qce_wordpress.constant_providers.url')->getConstants());
     }
 
     public function testAutowiredConstantProviders(): void

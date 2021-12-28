@@ -18,7 +18,16 @@ class QceWordPressExtension extends Extension
 
         $config = $this->processConfiguration(new Configuration(), $configs);
 
+        $this->loadConstantProviders($config, $container);
+    }
+
+    /**
+     * @param array<string, mixed> $config
+     */
+    private function loadConstantProviders(array $config, ContainerBuilder $container): void
+    {
         $container->getDefinition('qce_wordpress.constant_providers.database')->setArguments([$config['db']]);
+        $container->getDefinition('qce_wordpress.constant_providers.url')->setArguments([$config['home'], $config['site_url']]);
 
         $container->registerForAutoconfiguration(ConstantProviderInterface::class)->addTag('qce_wordpress.constant_provider');
     }

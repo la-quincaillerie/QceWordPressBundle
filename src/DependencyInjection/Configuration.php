@@ -14,6 +14,14 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder('qce_wordpress');
         $rootNode = $treeBuilder->getRootNode();
 
+        $rootNode
+            ->children()
+                ->scalarNode('home')->isRequired()->cannotBeEmpty()->end()
+                ->scalarNode('site_url')->isRequired()->cannotBeEmpty()->end()
+                ->scalarNode('table_prefix')->defaultValue('wp_')->end()
+            ->end()
+        ;
+
         $this->addDatabaseSection($rootNode);
 
         return $treeBuilder;
