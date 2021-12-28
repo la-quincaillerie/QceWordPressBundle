@@ -2,6 +2,7 @@
 
 namespace Qce\WordPressBundle\DependencyInjection;
 
+use Composer\InstalledVersions;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -16,6 +17,10 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
+                ->scalarNode('wordpress_dir')
+                    ->defaultValue(realpath(InstalledVersions::getInstallPath('roots/wordpress') ?? ""))
+                    ->cannotBeEmpty()
+                ->end()
                 ->scalarNode('home')->isRequired()->cannotBeEmpty()->end()
                 ->scalarNode('site_url')->isRequired()->cannotBeEmpty()->end()
                 ->scalarNode('table_prefix')->defaultValue('wp_')->end()

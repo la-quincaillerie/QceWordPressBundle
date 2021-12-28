@@ -9,6 +9,7 @@ use Qce\WordPressBundle\WordPress\Constant\ConstantProviderInterface;
 use Qce\WordPressBundle\WordPress\Constant\DatabaseConstantProvider;
 use Qce\WordPressBundle\WordPress\Constant\ConstantProvider;
 use Qce\WordPressBundle\WordPress\Constant\URLConstantProvider;
+use Qce\WordPressBundle\WordPress\WordPressConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class QceWordPressExtensionTest extends TestCase
@@ -94,6 +95,14 @@ class QceWordPressExtensionTest extends TestCase
         $autoconfigured = $this->container->getAutoconfiguredInstanceof();
         self::assertArrayHasKey(ConstantProviderInterface::class, $autoconfigured);
         self::assertTrue($autoconfigured[ConstantProviderInterface::class]->hasTag('qce_wordpress.constant_provider'));
+    }
+
+    public function testWordPressConfig(): void
+    {
+        $this->extension->load(self::DEFAULT_CONFIGS, $this->container);
+        self::assertTrue($this->container->has('qce_wordpress.wordpress.config'));
+        self::assertTrue($this->container->findDefinition('qce_wordpress.wordpress.config')->isPublic());
+        self::assertInstanceOf(WordPressConfig::class, $this->container->get('qce_wordpress.wordpress.config'));
     }
 
     protected function setUp(): void

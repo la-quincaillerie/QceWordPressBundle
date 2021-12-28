@@ -19,6 +19,9 @@ class QceWordPressExtension extends Extension
 
         $config = $this->processConfiguration(new Configuration(), $configs);
 
+        $container->getDefinition('qce_wordpress.wordpress.config')
+            ->setArgument(0, $config['wordpress_dir'])
+            ->setArgument(1, $config['table_prefix']);
         $this->loadConstantProviders($config, $container);
     }
 
