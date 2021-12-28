@@ -5,7 +5,7 @@ namespace Qce\WordPressBundle\WordPress\Constant;
 interface ConstantProviderInterface
 {
     /**
-     * @return iterable<string, string>
+     * @return iterable<string, mixed>
      */
     public function getConstants(): iterable;
 }

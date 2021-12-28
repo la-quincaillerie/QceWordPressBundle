@@ -29,32 +29,44 @@ class QceWordPressExtensionTest extends TestCase
         self::assertInstanceOf(ConstantManagerInterface::class, $this->container->get('qce_wordpress.constant_manager'));
     }
 
-    public function testDatabaseConstantProviderService(): void
+    /**
+     * @param class-string $serviceClass
+     * @param array<string, mixed> $constants
+     *
+     * @dataProvider getConstantProviders
+     */
+    public function testContantProviderResult(string $serviceName, string $serviceClass, array $constants): void
     {
         $this->extension->load(self::DEFAULT_CONFIGS, $this->container);
-        self::assertTrue($this->container->has('qce_wordpress.constant_providers.database'));
-        self::assertInstanceOf(DatabaseConstantProvider::class, $this->container->get('qce_wordpress.constant_providers.database'));
-        self::assertTrue($this->container->findDefinition('qce_wordpress.constant_providers.database')->hasTag('qce_wordpress.constant_provider'));
-        self::assertEquals([
-            'DB_HOST' => 'db:3306',
-            'DB_NAME' => 'db',
-            'DB_USER' => 'db',
-            'DB_PASSWORD' => 'db',
-            'DB_CHARSET' => 'utf8mb4',
-            'DB_COLLATE' => '',
-        ], $this->container->get('qce_wordpress.constant_providers.database')->getConstants());
+        $serviceId = 'qce_wordpress.constant_providers.' . $serviceName;
+        self::assertTrue($this->container->has($serviceId));
+        self::assertTrue($this->container->findDefinition($serviceId)->hasTag('qce_wordpress.constant_provider'));
+
+        $service = $this->container->get($serviceId);
+        self::assertInstanceOf(ConstantProviderInterface::class, $service);
+        self::assertInstanceOf($serviceClass, $service);
+        self::assertEquals($constants, $service->getConstants());
     }
 
-    public function testURLConstantProviderService(): void
+    /**
+     * @return array{string, class-string, array<string, mixed>}[]
+     */
+    public function getConstantProviders(): array
     {
-        $this->extension->load(self::DEFAULT_CONFIGS, $this->container);
-        self::assertTrue($this->container->has('qce_wordpress.constant_providers.url'));
-        self::assertInstanceOf(URLConstantProvider::class, $this->container->get('qce_wordpress.constant_providers.url'));
-        self::assertTrue($this->container->findDefinition('qce_wordpress.constant_providers.url')->hasTag('qce_wordpress.constant_provider'));
-        self::assertEquals([
-            'WP_HOME' => 'https://localhost',
-            'WP_SITEURL' => 'https://localhost/wp',
-        ], $this->container->get('qce_wordpress.constant_providers.url')->getConstants());
+        return [
+            ['database', DatabaseConstantProvider::class, [
+                'DB_HOST' => 'db:3306',
+                'DB_NAME' => 'db',
+                'DB_USER' => 'db',
+                'DB_PASSWORD' => 'db',
+                'DB_CHARSET' => 'utf8mb4',
+                'DB_COLLATE' => '',
+            ]],
+            ['url', URLConstantProvider::class, [
+                'WP_HOME' => 'https://localhost',
+                'WP_SITEURL' => 'https://localhost/wp',
+            ]],
+        ];
     }
 
     public function testAutowiredConstantProviders(): void
