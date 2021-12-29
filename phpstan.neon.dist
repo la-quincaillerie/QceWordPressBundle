@@ -5,3 +5,5 @@ parameters:
         - tests
     bootstrapFiles:
         - vendor/bin/.phpunit/phpunit/vendor/autoload.php
+    scanDirectories:
+        - wordpress

@@ -19,10 +19,11 @@ class QceWordPressExtension extends Extension
 
         $config = $this->processConfiguration(new Configuration(), $configs);
 
-        $container->getDefinition('qce_wordpress.wordpress.config')
-            ->setArgument(0, $config['wordpress_dir'])
-            ->setArgument(1, $config['table_prefix']);
+        $container->setParameter('qce_wordpress.wordpress_dir', $config['wordpress_dir']);
+
+        $container->getDefinition('qce_wordpress.wordpress.config')->setArgument(1, $config['table_prefix']);
         $this->loadConstantProviders($config, $container);
+        $this->loadWordPress($config, $container);
     }
 
     /**
@@ -39,6 +40,18 @@ class QceWordPressExtension extends Extension
         }
 
         $container->registerForAutoconfiguration(ConstantProviderInterface::class)->addTag('qce_wordpress.constant_provider');
+    }
+
+    /**
+     * @param array<string, mixed> $configs
+     */
+    private function loadWordPress(array $configs, ContainerBuilder $container): void
+    {
+        /** @var string[] $globals */
+        $globals = $configs['globals'];
+        $coreGlobals = ['wp', 'wp_the_query', 'wpdb', 'wp_query'];
+
+        $container->findDefinition('qce_wordpress.wordpress')->setArgument(1, array_merge($coreGlobals, $globals));
     }
 
     public function getAlias(): string

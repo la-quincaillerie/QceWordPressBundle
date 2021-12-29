@@ -3,12 +3,14 @@
 namespace Qce\WordPressBundle\Tests\DependencyInjection;
 
 use PHPUnit\Framework\TestCase;
+use Qce\WordPressBundle\Controller\WordPressController;
 use Qce\WordPressBundle\DependencyInjection\QceWordPressExtension;
 use Qce\WordPressBundle\WordPress\Constant\ConstantManagerInterface;
 use Qce\WordPressBundle\WordPress\Constant\ConstantProviderInterface;
 use Qce\WordPressBundle\WordPress\Constant\Provider\ConstantProvider;
 use Qce\WordPressBundle\WordPress\Constant\Provider\DatabaseConstantProvider;
 use Qce\WordPressBundle\WordPress\Constant\Provider\URLConstantProvider;
+use Qce\WordPressBundle\WordPress\WordPress;
 use Qce\WordPressBundle\WordPress\WordPressConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -103,6 +105,21 @@ class QceWordPressExtensionTest extends TestCase
         self::assertTrue($this->container->has('qce_wordpress.wordpress.config'));
         self::assertTrue($this->container->findDefinition('qce_wordpress.wordpress.config')->isPublic());
         self::assertInstanceOf(WordPressConfig::class, $this->container->get('qce_wordpress.wordpress.config'));
+    }
+
+    public function testWordPress(): void
+    {
+        $this->extension->load(self::DEFAULT_CONFIGS, $this->container);
+        self::assertTrue($this->container->has('qce_wordpress.wordpress'));
+        self::assertInstanceOf(WordPress::class, $this->container->get('qce_wordpress.wordpress'));
+    }
+
+    public function testWordPressController(): void
+    {
+        $this->extension->load(self::DEFAULT_CONFIGS, $this->container);
+        self::assertTrue($this->container->has('qce_wordpress.wordpress.controller'));
+        self::assertTrue($this->container->findDefinition('qce_wordpress.wordpress.controller')->isPublic());
+        self::assertInstanceOf(WordPressController::class, $this->container->get('qce_wordpress.wordpress.controller'));
     }
 
     protected function setUp(): void

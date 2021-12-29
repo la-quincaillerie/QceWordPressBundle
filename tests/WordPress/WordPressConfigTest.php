@@ -41,6 +41,20 @@ class WordPressConfigTest extends TestCase
         self::assertSame('value2', $this->constantManager->constant('NAME'));
     }
 
+    public function testIncludeSettings(): void
+    {
+        global $table_prefix;
+        $wpConfig = new WordPressConfig(
+            __DIR__.'/test-wordpress',
+            'table_prefix_',
+            [],
+            $this->constantManager,
+        );
+        $wpConfig->includeSettings();
+
+        self::assertSame('table_prefix_', $table_prefix);
+    }
+
     public function setUp(): void
     {
         $this->constantManager = new TestConstantManager();

@@ -31,7 +31,11 @@ class WordPressConfig
      */
     private function getConstants(): array
     {
-        return array_merge(...array_map(static fn($p) => (array)$p->getConstants(), (array)$this->constantProviders));
+        $constants = [];
+        foreach ($this->constantProviders as $p){
+            $constants[] = (array)$p->getConstants();
+        }
+        return array_merge(...$constants);
     }
 
     public function includeSettings(): void

@@ -29,6 +29,7 @@ class Configuration implements ConfigurationInterface
 
         $this->addExtraConstantsSection($rootNode);
         $this->addDatabaseSection($rootNode);
+        $this->addGlobalsSection($rootNode);
 
         return $treeBuilder;
     }
@@ -74,6 +75,16 @@ class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
             ->end()
+        ;
+    }
+
+    private function addGlobalsSection(ArrayNodeDefinition $rootNode): void
+    {
+        $rootNode
+            ->fixXmlConfig('global')
+            ->children()
+                ->arrayNode('globals')
+                    ->scalarPrototype()
         ;
     }
 }
