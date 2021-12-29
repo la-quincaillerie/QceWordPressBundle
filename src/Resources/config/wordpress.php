@@ -3,8 +3,8 @@
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use Qce\WordPressBundle\WordPress\Constant\ConstantManager;
-use Qce\WordPressBundle\WordPress\Constant\DatabaseConstantProvider;
-use Qce\WordPressBundle\WordPress\Constant\URLConstantProvider;
+use Qce\WordPressBundle\WordPress\Constant\Provider\DatabaseConstantProvider;
+use Qce\WordPressBundle\WordPress\Constant\Provider\URLConstantProvider;
 use Qce\WordPressBundle\WordPress\WordPressConfig;
 
 return static function (ContainerConfigurator $container) {

@@ -3,7 +3,7 @@
 namespace Qce\WordPressBundle\DependencyInjection;
 
 use Qce\WordPressBundle\WordPress\Constant\ConstantProviderInterface;
-use Qce\WordPressBundle\WordPress\Constant\ConstantProvider;
+use Qce\WordPressBundle\WordPress\Constant\Provider\ConstantProvider;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;

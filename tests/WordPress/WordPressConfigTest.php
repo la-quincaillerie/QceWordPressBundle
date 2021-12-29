@@ -4,7 +4,7 @@ namespace Qce\WordPressBundle\Tests\WordPress;
 
 use PHPUnit\Framework\TestCase;
 use Qce\WordPressBundle\Tests\WordPress\Constant\TestConstantManager;
-use Qce\WordPressBundle\WordPress\Constant\ConstantProvider;
+use Qce\WordPressBundle\WordPress\Constant\Provider\ConstantProvider;
 use Qce\WordPressBundle\WordPress\WordPressConfig;
 
 class WordPressConfigTest extends TestCase

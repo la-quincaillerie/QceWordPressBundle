@@ -3,7 +3,7 @@
 namespace Qce\WordPressBundle\Tests\WordPress\Constant;
 
 use PHPUnit\Framework\TestCase;
-use Qce\WordPressBundle\WordPress\Constant\DatabaseConstantProvider;
+use Qce\WordPressBundle\WordPress\Constant\Provider\DatabaseConstantProvider;
 
 class DatabaseConstantProviderTest extends TestCase
 {

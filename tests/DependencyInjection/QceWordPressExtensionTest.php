@@ -6,9 +6,9 @@ use PHPUnit\Framework\TestCase;
 use Qce\WordPressBundle\DependencyInjection\QceWordPressExtension;
 use Qce\WordPressBundle\WordPress\Constant\ConstantManagerInterface;
 use Qce\WordPressBundle\WordPress\Constant\ConstantProviderInterface;
-use Qce\WordPressBundle\WordPress\Constant\DatabaseConstantProvider;
-use Qce\WordPressBundle\WordPress\Constant\ConstantProvider;
-use Qce\WordPressBundle\WordPress\Constant\URLConstantProvider;
+use Qce\WordPressBundle\WordPress\Constant\Provider\ConstantProvider;
+use Qce\WordPressBundle\WordPress\Constant\Provider\DatabaseConstantProvider;
+use Qce\WordPressBundle\WordPress\Constant\Provider\URLConstantProvider;
 use Qce\WordPressBundle\WordPress\WordPressConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 

@@ -1,6 +1,8 @@
 <?php
 
-namespace Qce\WordPressBundle\WordPress\Constant;
+namespace Qce\WordPressBundle\WordPress\Constant\Provider;
+
+use Qce\WordPressBundle\WordPress\Constant\ConstantProviderInterface;
 
 /**
  * @phpstan-type Param array{

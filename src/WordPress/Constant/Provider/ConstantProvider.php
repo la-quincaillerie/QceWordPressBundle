@@ -1,6 +1,8 @@
 <?php
 
-namespace Qce\WordPressBundle\WordPress\Constant;
+namespace Qce\WordPressBundle\WordPress\Constant\Provider;
+
+use Qce\WordPressBundle\WordPress\Constant\ConstantProviderInterface;
 
 class ConstantProvider implements ConstantProviderInterface
 {
