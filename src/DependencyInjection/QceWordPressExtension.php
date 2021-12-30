@@ -2,9 +2,12 @@
 
 namespace Qce\WordPressBundle\DependencyInjection;
 
+use Qce\WordPressBundle\Attribute\WPHook;
 use Qce\WordPressBundle\WordPress\Constant\ConstantProviderInterface;
 use Qce\WordPressBundle\WordPress\Constant\Provider\ConstantProvider;
+use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
@@ -24,6 +27,7 @@ class QceWordPressExtension extends Extension
         $container->getDefinition('qce_wordpress.wordpress.config')->setArgument(1, $config['table_prefix']);
         $this->loadConstantProviders($config, $container);
         $this->loadWordPress($config, $container);
+        $this->loadHooks($config, $container);
     }
 
     /**
@@ -52,6 +56,29 @@ class QceWordPressExtension extends Extension
         $coreGlobals = ['wp', 'wp_the_query', 'wpdb', 'wp_query'];
 
         $container->findDefinition('qce_wordpress.wordpress')->setArgument(1, array_merge($coreGlobals, $globals));
+    }
+
+    /**
+     * @param array<string, mixed> $configs
+     */
+    private function loadHooks(array $configs, ContainerBuilder $container): void
+    {
+        $container->registerAttributeForAutoconfiguration(
+            WPHook::class,
+            static function (ChildDefinition $definition, WPHook $hook, \Reflector $reflector) {
+                $methodReflector = match (true) {
+                    $reflector instanceof \ReflectionMethod => $reflector,
+                    $reflector instanceof \ReflectionClass && $reflector->hasMethod('__invoke') => $reflector->getMethod('__invoke'),
+                    default => throw new InvalidConfigurationException(sprintf("%s can only be used on methods or invokable services", WPHook::class))
+                };
+                $args = [
+                    'name' => $hook->name,
+                    'priority' => $hook->priority,
+                    'accepted_args' => $hook->acceptedArgs ?? count($methodReflector->getParameters()),
+                    'method' => $methodReflector->getName(),
+                ];
+                $definition->addTag('qce_wordpress.wordpress_hook', $args);
+            });
     }
 
     public function getAlias(): string

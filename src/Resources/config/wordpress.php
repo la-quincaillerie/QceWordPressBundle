@@ -8,6 +8,7 @@ use Qce\WordPressBundle\WordPress\Constant\Provider\DatabaseConstantProvider;
 use Qce\WordPressBundle\WordPress\Constant\Provider\URLConstantProvider;
 use Qce\WordPressBundle\WordPress\WordPress;
 use Qce\WordPressBundle\WordPress\WordPressConfig;
+use Qce\WordPressBundle\WordPress\WordPressHooks;
 
 return static function (ContainerConfigurator $container) {
     $container->services()
@@ -36,5 +37,11 @@ return static function (ContainerConfigurator $container) {
         ->set('qce_wordpress.wordpress.controller', WordPressController::class)
             ->args([service('qce_wordpress.wordpress')])
             ->public()
+
+        ->set('qce_wordpress.wordpress.hooks', WordPressHooks::class)
+            ->file('%qce_wordpress.wordpress_dir%/wp-includes/plugin.php')
+            ->args([tagged_iterator('qce_wordpress.wordpress_hook')])
+            ->public()
+        ->alias(WordPressHooks::class, 'qce_wordpress.wordpress.hooks')
     ;
 };

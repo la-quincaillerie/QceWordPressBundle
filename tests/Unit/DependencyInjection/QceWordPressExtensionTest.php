@@ -123,6 +123,16 @@ class QceWordPressExtensionTest extends TestCase
         self::assertInstanceOf(WordPressController::class, $this->container->get('qce_wordpress.wordpress.controller'));
     }
 
+    public function testWordPressHooks(): void
+    {
+        $this->extension->load(self::DEFAULT_CONFIGS, $this->container);
+        self::assertTrue($this->container->has('qce_wordpress.wordpress.hooks'));
+        self::assertTrue($this->container->has(WordPressHooks::class));
+        self::assertTrue($this->container->findDefinition('qce_wordpress.wordpress.hooks')->isPublic());
+        self::assertInstanceOf(WordPressHooks::class, $this->container->get('qce_wordpress.wordpress.hooks'));
+        self::assertContains(dirname(__DIR__) . '/test-wordpress/wp-includes/plugin.php', get_included_files());
+    }
+
     protected function setUp(): void
     {
         $this->extension = new QceWordPressExtension();
