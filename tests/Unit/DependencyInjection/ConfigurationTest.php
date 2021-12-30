@@ -1,6 +1,6 @@
 <?php
 
-namespace Qce\WordPressBundle\Tests\DependencyInjection;
+namespace Qce\WordPressBundle\Tests\Unit\DependencyInjection;
 
 use PHPUnit\Framework\TestCase;
 use Qce\WordPressBundle\DependencyInjection\Configuration;
@@ -13,6 +13,7 @@ class ConfigurationTest extends TestCase
         'home' => 'https://localhost',
         'site_url' => 'https://localhost/wp',
         'db' => 'mysql://db:db@db/db',
+        'wordpress_dir' => __DIR__.'/../test-wordpress',
     ];
     private Configuration $configuration;
     private Processor $processor;

@@ -5,7 +5,7 @@ use Symfony\Component\Routing\RouteCollection;
 
 $collection = new RouteCollection();
 $collection->add(
-    'qce_wordpress_catch_all',
+    '_qce_wordpress_catch_all',
     new Route('/{path<.*>}', ['_controller' => 'qce_wordpress.wordpress.controller']),
     -10,
 );

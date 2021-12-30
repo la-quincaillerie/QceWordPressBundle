@@ -1,6 +1,6 @@
 <?php
 
-namespace Qce\WordPressBundle\Tests\WordPress\Constant;
+namespace Qce\WordPressBundle\Tests\Unit\WordPress\Constant;
 
 use PHPUnit\Framework\TestCase;
 use Qce\WordPressBundle\WordPress\Constant\Provider\DatabaseConstantProvider;

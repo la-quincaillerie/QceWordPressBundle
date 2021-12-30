@@ -1,6 +1,6 @@
 <?php
 
-namespace Qce\WordPressBundle\Tests\DependencyInjection;
+namespace Qce\WordPressBundle\Tests\Unit\DependencyInjection;
 
 use PHPUnit\Framework\TestCase;
 use Qce\WordPressBundle\Controller\WordPressController;
@@ -12,6 +12,7 @@ use Qce\WordPressBundle\WordPress\Constant\Provider\DatabaseConstantProvider;
 use Qce\WordPressBundle\WordPress\Constant\Provider\URLConstantProvider;
 use Qce\WordPressBundle\WordPress\WordPress;
 use Qce\WordPressBundle\WordPress\WordPressConfig;
+use Qce\WordPressBundle\WordPress\WordPressHooks;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class QceWordPressExtensionTest extends TestCase
@@ -43,7 +44,7 @@ class QceWordPressExtensionTest extends TestCase
     public function testContantProviderResult(string $serviceName, string $serviceClass, array $constants, array $extraConfig = []): void
     {
         $configs = self::DEFAULT_CONFIGS;
-        if(!empty($extraConfig)){
+        if (!empty($extraConfig)) {
             $configs[] = $extraConfig;
         }
         $this->extension->load($configs, $this->container);
@@ -120,6 +121,16 @@ class QceWordPressExtensionTest extends TestCase
         self::assertTrue($this->container->has('qce_wordpress.wordpress.controller'));
         self::assertTrue($this->container->findDefinition('qce_wordpress.wordpress.controller')->isPublic());
         self::assertInstanceOf(WordPressController::class, $this->container->get('qce_wordpress.wordpress.controller'));
+    }
+
+    public function testWordPressHooks(): void
+    {
+        $this->extension->load(self::DEFAULT_CONFIGS, $this->container);
+        self::assertTrue($this->container->has('qce_wordpress.wordpress.hooks'));
+        self::assertTrue($this->container->has(WordPressHooks::class));
+        self::assertTrue($this->container->findDefinition('qce_wordpress.wordpress.hooks')->isPublic());
+        self::assertInstanceOf(WordPressHooks::class, $this->container->get('qce_wordpress.wordpress.hooks'));
+        self::assertContains(dirname(__DIR__) . '/test-wordpress/wp-includes/plugin.php', get_included_files());
     }
 
     protected function setUp(): void
