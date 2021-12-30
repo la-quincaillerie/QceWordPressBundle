@@ -1,9 +1,9 @@
 <?php
 
-namespace Qce\WordPressBundle\Tests\WordPress;
+namespace Qce\WordPressBundle\Tests\Unit\WordPress;
 
 use PHPUnit\Framework\TestCase;
-use Qce\WordPressBundle\Tests\WordPress\Constant\TestConstantManager;
+use Qce\WordPressBundle\Tests\Unit\WordPress\Constant\TestConstantManager;
 use Qce\WordPressBundle\WordPress\Constant\Provider\ConstantProvider;
 use Qce\WordPressBundle\WordPress\WordPressConfig;
 
@@ -45,7 +45,7 @@ class WordPressConfigTest extends TestCase
     {
         global $table_prefix;
         $wpConfig = new WordPressConfig(
-            __DIR__.'/test-wordpress',
+            __DIR__.'/../test-wordpress',
             'table_prefix_',
             [],
             $this->constantManager,

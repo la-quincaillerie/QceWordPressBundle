@@ -1,6 +1,6 @@
 <?php
 
-namespace Qce\WordPressBundle\Tests\WordPress;
+namespace Qce\WordPressBundle\Tests\Unit\WordPress;
 
 use PHPUnit\Framework\TestCase;
 use Qce\WordPressBundle\WordPress\WordPress;
@@ -12,7 +12,7 @@ class WordPressTest extends TestCase
         global $wp_query;
 
         $wp = new WordPress(
-            __DIR__.'/test-wordpress',
+            __DIR__.'/../test-wordpress',
             ['wp', 'wp_query'],
         );
         $response = $wp->frontResponse();
