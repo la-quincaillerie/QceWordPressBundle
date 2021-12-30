@@ -17,10 +17,7 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->scalarNode('wordpress_dir')
-                    ->defaultValue(realpath(InstalledVersions::getInstallPath('roots/wordpress') ?? ""))
-                    ->cannotBeEmpty()
-                ->end()
+                ->scalarNode('wordpress_dir')->end()
                 ->scalarNode('home')->isRequired()->cannotBeEmpty()->end()
                 ->scalarNode('site_url')->isRequired()->cannotBeEmpty()->end()
                 ->scalarNode('table_prefix')->defaultValue('wp_')->end()
