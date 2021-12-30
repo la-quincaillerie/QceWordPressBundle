@@ -2,6 +2,7 @@
 
 namespace Qce\WordPressBundle\DependencyInjection;
 
+use Composer\InstalledVersions;
 use Qce\WordPressBundle\Attribute\WPHook;
 use Qce\WordPressBundle\WordPress\Constant\ConstantProviderInterface;
 use Qce\WordPressBundle\WordPress\Constant\Provider\ConstantProvider;
@@ -22,7 +23,7 @@ class QceWordPressExtension extends Extension
 
         $config = $this->processConfiguration(new Configuration(), $configs);
 
-        $container->setParameter('qce_wordpress.wordpress_dir', $config['wordpress_dir']);
+        $container->setParameter('qce_wordpress.wordpress_dir', $config['wordpress_dir'] ?? InstalledVersions::getInstallPath('roots/wordpress') ?? "");
 
         $container->getDefinition('qce_wordpress.wordpress.config')->setArgument(1, $config['table_prefix']);
         $this->loadConstantProviders($config, $container);
