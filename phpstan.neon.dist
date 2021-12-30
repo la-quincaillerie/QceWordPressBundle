@@ -3,6 +3,8 @@ parameters:
     paths:
         - src
         - tests
+    excludePaths:
+        - tests/Functional/app/var
     bootstrapFiles:
         - vendor/bin/.phpunit/phpunit/vendor/autoload.php
     scanDirectories:
