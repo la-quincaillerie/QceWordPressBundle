@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 
@@ -32,16 +33,21 @@ class TestKernel extends Kernel
         return __DIR__;
     }
 
-    public function getCacheDir(): string
-    {
-        return __DIR__.'/var/cache/'.spl_object_hash($this);
-    }
-
     public function registerBundles(): iterable
     {
         return [
             new FrameworkBundle(),
             new QceWordPressBundle(),
         ];
+    }
+
+    public function shutdown(): void
+    {
+        parent::shutdown();
+
+        (new Filesystem())->remove([
+            $this->getCacheDir(),
+            $this->getLogDir(),
+        ]);
     }
 }
