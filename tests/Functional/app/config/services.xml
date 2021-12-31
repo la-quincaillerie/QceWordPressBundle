@@ -17,8 +17,7 @@
     <framework:config test="true"/>
 
     <qcewp:config
-            home="localhost"
-            site_url="localhost/wp"
+            url="https://localhost"
             db="mysql://db:db@db/db"
     />
 </container>

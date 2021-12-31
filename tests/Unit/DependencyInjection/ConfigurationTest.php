@@ -10,10 +10,9 @@ use Symfony\Component\Config\Definition\Processor;
 class ConfigurationTest extends TestCase
 {
     public const DEFAULT_CONFIG = [
-        'home' => 'https://localhost',
-        'site_url' => 'https://localhost/wp',
+        'url' => 'https://localhost',
+        'dir' => __DIR__.'/../test-wordpress',
         'db' => 'mysql://db:db@db/db',
-        'wordpress_dir' => __DIR__.'/../test-wordpress',
     ];
     private Configuration $configuration;
     private Processor $processor;
@@ -41,6 +40,7 @@ class ConfigurationTest extends TestCase
             'dbname' => 'dbname',
             'charset' => 'charset',
             'collate' => 'collate',
+            'table_prefix' => 'wp_'
         ], $config['db']);
     }
 

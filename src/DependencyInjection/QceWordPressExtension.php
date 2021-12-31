@@ -2,7 +2,6 @@
 
 namespace Qce\WordPressBundle\DependencyInjection;
 
-use Composer\InstalledVersions;
 use Qce\WordPressBundle\Attribute\WPHook;
 use Qce\WordPressBundle\WordPress\Constant\ConstantProviderInterface;
 use Qce\WordPressBundle\WordPress\Constant\Provider\ConstantProvider;
@@ -13,6 +12,36 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
+/**
+ * @phpstan-type Config array{
+ *   path: array{
+ *     wordpress?: string,
+ *     content: string,
+ *   },
+ *   dir: array{
+ *     wordpress: string,
+ *     content: string,
+ *   },
+ *   url: array{
+ *     home: string,
+ *     site: string,
+ *     content: string,
+ *   },
+ *   globals: string[],
+ *   constants: array<string, string>,
+ *   db: array{
+ *     url?: string,
+ *     dbname?: string,
+ *     host: string,
+ *     port: string,
+ *     user: string,
+ *     password: string,
+ *     charset: string,
+ *     collate: string,
+ *     table_prefix: string,
+ *   },
+ * }
+ */
 class QceWordPressExtension extends Extension
 {
 
@@ -21,23 +50,53 @@ class QceWordPressExtension extends Extension
         $loader = new PhpFileLoader($container, new FileLocator(dirname(__DIR__) . '/Resources/config'));
         $loader->load('wordpress.php');
 
+        /** @var Config $config */
         $config = $this->processConfiguration(new Configuration(), $configs);
 
-        $container->setParameter('qce_wordpress.wordpress_dir', $config['wordpress_dir'] ?? InstalledVersions::getInstallPath('roots/wordpress') ?? "");
+        $this->loadPathParameters($config, $container);
+        $this->loadDirParameters($config, $container);
+        $this->loadURLParameters($config, $container);
 
-        $container->getDefinition('qce_wordpress.wordpress.config')->setArgument(1, $config['table_prefix']);
+        $container->getDefinition('qce_wordpress.wordpress.config')->setArgument(1, $config['db']['table_prefix']);
         $this->loadConstantProviders($config, $container);
         $this->loadWordPress($config, $container);
         $this->loadHooks($config, $container);
     }
 
     /**
-     * @param array<string, mixed> $config
+     * @param Config $config
+     */
+    private function loadPathParameters(array $config, ContainerBuilder $container): void
+    {
+        $container->setParameter('qce_wordpress.path.wordpress', $config['path']['wordpress'] ?? basename($config['dir']['wordpress']));
+        $container->setParameter('qce_wordpress.path.content', $config['path']['content']);
+    }
+
+    /**
+     * @param Config $config
+     */
+    private function loadDirParameters(array $config, ContainerBuilder $container): void
+    {
+        $container->setParameter('qce_wordpress.dir.wordpress', $config['dir']['wordpress']);
+        $container->setParameter('qce_wordpress.dir.content', $config['dir']['content']);
+    }
+
+    /**
+     * @param Config $config
+     */
+    private function loadURLParameters(array $config, ContainerBuilder $container): void
+    {
+        $container->setParameter('qce_wordpress.url.home', $config['url']['home']);
+        $container->setParameter('qce_wordpress.url.site', $config['url']['site']);
+        $container->setParameter('qce_wordpress.url.content', $config['url']['content']);
+    }
+
+    /**
+     * @param Config $config
      */
     private function loadConstantProviders(array $config, ContainerBuilder $container): void
     {
         $container->getDefinition('qce_wordpress.constant_providers.database')->setArguments([$config['db']]);
-        $container->getDefinition('qce_wordpress.constant_providers.url')->setArguments([$config['home'], $config['site_url']]);
         if (!empty($config['constants'])) {
             $container->register('qce_wordpress.constant_providers.extra', ConstantProvider::class)
                 ->setArguments([$config['constants']])
@@ -48,7 +107,7 @@ class QceWordPressExtension extends Extension
     }
 
     /**
-     * @param array<string, mixed> $configs
+     * @param Config $configs
      */
     private function loadWordPress(array $configs, ContainerBuilder $container): void
     {
@@ -60,7 +119,7 @@ class QceWordPressExtension extends Extension
     }
 
     /**
-     * @param array<string, mixed> $configs
+     * @param Config $configs
      */
     private function loadHooks(array $configs, ContainerBuilder $container): void
     {

@@ -72,9 +72,11 @@ class QceWordPressExtensionTest extends TestCase
                 'DB_CHARSET' => 'utf8mb4',
                 'DB_COLLATE' => '',
             ]],
-            ['url', URLConstantProvider::class, [
+            ['default', ConstantProvider::class, [
                 'WP_HOME' => 'https://localhost',
-                'WP_SITEURL' => 'https://localhost/wp',
+                'WP_SITEURL' => 'https://localhost/test-wordpress',
+                'WP_CONTENT_URL' => 'https://localhost/wp-bundles',
+                'WP_CONTENT_DIR' => __DIR__.'/../test-wordpress/../wp-bundles',
             ]],
             ['extra', ConstantProvider::class, [
                 'EXTRA_1' => 'extra_1',
