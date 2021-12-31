@@ -15,20 +15,59 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder('qce_wordpress');
         $rootNode = $treeBuilder->getRootNode();
 
-        $rootNode
-            ->children()
-                ->scalarNode('wordpress_dir')->end()
-                ->scalarNode('home')->isRequired()->cannotBeEmpty()->end()
-                ->scalarNode('site_url')->isRequired()->cannotBeEmpty()->end()
-                ->scalarNode('table_prefix')->defaultValue('wp_')->end()
-            ->end()
-        ;
-
+        $this->addPathSection($rootNode);
+        $this->addDirectorySection($rootNode);
+        $this->addURLSection($rootNode);
         $this->addExtraConstantsSection($rootNode);
         $this->addDatabaseSection($rootNode);
         $this->addGlobalsSection($rootNode);
 
         return $treeBuilder;
+    }
+
+    private function addPathSection(ArrayNodeDefinition $rootNode): void
+    {
+        $rootNode
+            ->children()
+                ->arrayNode('path')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->scalarNode('wordpress')->end()
+                        ->scalarNode('content')->defaultValue('wp-bundles')->end()
+        ;
+    }
+
+    private function addDirectorySection(ArrayNodeDefinition $rootNode): void
+    {
+        $rootNode
+            ->children()
+                ->arrayNode('dir')
+                    ->addDefaultsIfNotSet()
+                    ->beforeNormalization()
+                        ->ifString()
+                        ->then(fn($wordpress) => ['wordpress' => $wordpress])
+                    ->end()
+                    ->children()
+                        ->scalarNode('wordpress')->defaultValue(InstalledVersions::getInstallPath('roots/wordpress'))->end()
+                        ->scalarNode('content')->defaultValue('%qce_wordpress.dir.wordpress%/../%qce_wordpress.path.content%')->end()
+        ;
+    }
+
+    private function addURLSection(ArrayNodeDefinition $rootNode): void
+    {
+        $rootNode
+            ->children()
+                ->arrayNode('url')
+                    ->addDefaultsIfNotSet()
+                    ->beforeNormalization()
+                        ->ifString()
+                        ->then(fn($home_url) => ['home' => $home_url])
+                    ->end()
+                    ->children()
+                        ->scalarNode('home')->isRequired()->cannotBeEmpty()->end()
+                        ->scalarNode('site')->defaultValue('%qce_wordpress.url.home%/%qce_wordpress.path.wordpress%')->end()
+                        ->scalarNode('content')->defaultValue('%qce_wordpress.url.home%/%qce_wordpress.path.content%')->end()
+        ;
     }
 
     private function addExtraConstantsSection(ArrayNodeDefinition $rootNode): void
@@ -64,11 +103,12 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('url')->info('A URL with connection information; any parameter value parsed from this string will override explicitly set parameters')->end()
                         ->scalarNode('dbname')->end()
                         ->scalarNode('host')->defaultValue('localhost')->end()
-                        ->scalarNode('port')->defaultValue(3306)->end()
+                        ->scalarNode('port')->defaultValue('3306')->end()
                         ->scalarNode('user')->defaultValue('root')->end()
                         ->scalarNode('password')->defaultValue('')->end()
                         ->scalarNode('charset')->defaultValue('utf8mb4')->end()
                         ->scalarNode('collate')->defaultValue('')->end()
+                        ->scalarNode('table_prefix')->defaultValue('wp_')->end()
                     ->end()
                 ->end()
             ->end()
