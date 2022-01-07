@@ -35,10 +35,7 @@ return static function (ContainerConfigurator $container) {
         ->set('qce_wordpress.constant_manager', ConstantManager::class)
 
         ->set('qce_wordpress.wordpress', WordPress::class)
-            ->args([
-                param('qce_wordpress.dir.wordpress'),
-                abstract_arg('qce_wordpress.globals')
-            ])
+            ->args([param('qce_wordpress.dir.wordpress')])
 
         ->set('qce_wordpress.wordpress.controller', WordPressController::class)
             ->args([service('qce_wordpress.wordpress')])
