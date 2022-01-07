@@ -137,7 +137,7 @@ class QceWordPressExtension extends Extension
                     'accepted_args' => $hook->acceptedArgs ?? count($methodReflector->getParameters()),
                     'method' => $methodReflector->getName(),
                 ];
-                $definition->addTag('qce_wordpress.wordpress_hook', $args);
+                $definition->addTag('qce_wordpress.hook', $args);
             });
     }
 

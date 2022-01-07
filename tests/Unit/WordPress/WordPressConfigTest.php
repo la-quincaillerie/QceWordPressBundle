@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use Qce\WordPressBundle\Tests\Unit\WordPress\Constant\TestConstantManager;
 use Qce\WordPressBundle\WordPress\Constant\Provider\ConstantProvider;
 use Qce\WordPressBundle\WordPress\WordPressConfig;
+use Qce\WordPressBundle\WordPress\WordPressHooks;
 
 class WordPressConfigTest extends TestCase
 {
@@ -18,6 +19,7 @@ class WordPressConfigTest extends TestCase
             'prefix',
             [ new ConstantProvider(['NAME' => 'value']) ],
             $this->constantManager,
+            new WordPressHooks(),
         );
         $wpConfig->defineConstants();
 
@@ -35,6 +37,7 @@ class WordPressConfigTest extends TestCase
                 new ConstantProvider(['NAME' => 'value2']),
             ],
             $this->constantManager,
+            new WordPressHooks(),
         );
         $wpConfig->defineConstants();
 
@@ -49,6 +52,7 @@ class WordPressConfigTest extends TestCase
             'table_prefix_',
             [],
             $this->constantManager,
+            new WordPressHooks(),
         );
         $wpConfig->includeSettings();
 

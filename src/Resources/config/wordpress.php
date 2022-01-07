@@ -18,6 +18,7 @@ return static function (ContainerConfigurator $container) {
                 abstract_arg('qce_wordpress.table_prefix'),
                 tagged_iterator('qce_wordpress.constant_provider'),
                 service('qce_wordpress.constant_manager'),
+                service('qce_wordpress.wordpress.hooks')
             ])
             ->public()
         ->set('qce_wordpress.constant_providers.default', ConstantProvider::class)
@@ -45,7 +46,7 @@ return static function (ContainerConfigurator $container) {
 
         ->set('qce_wordpress.wordpress.hooks', WordPressHooks::class)
             ->file('%qce_wordpress.dir.wordpress%/wp-includes/plugin.php')
-            ->args([tagged_iterator('qce_wordpress.wordpress_hook')])
+            ->args([tagged_iterator('qce_wordpress.hook')])
             ->public()
         ->alias(WordPressHooks::class, 'qce_wordpress.wordpress.hooks')
     ;

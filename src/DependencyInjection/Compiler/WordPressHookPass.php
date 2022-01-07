@@ -10,12 +10,12 @@ class WordPressHookPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container): void
     {
-        if (!$container->has('qce_wordpress.wordpress.hooks')) {
+        if (!$container->has('qce_wordpress.wordpress.config')) {
             return;
         }
 
-        $definition = $container->findDefinition('qce_wordpress.wordpress.hooks');
-        $taggedServices = $container->findTaggedServiceIds('qce_wordpress.wordpress_hook');
+        $definition = $container->findDefinition('qce_wordpress.wordpress.config');
+        $taggedServices = $container->findTaggedServiceIds('qce_wordpress.hook');
 
         foreach ($taggedServices as $id => $tags) {
             foreach ($tags as $tag) {
