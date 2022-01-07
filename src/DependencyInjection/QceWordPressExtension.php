@@ -27,7 +27,6 @@ use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
  *     site: string,
  *     content: string,
  *   },
- *   globals: string[],
  *   constants: array<string, string>,
  *   db: array{
  *     url?: string,
@@ -59,7 +58,6 @@ class QceWordPressExtension extends Extension
 
         $container->getDefinition('qce_wordpress.wordpress.config')->setArgument(1, $config['db']['table_prefix']);
         $this->loadConstantProviders($config, $container);
-        $this->loadWordPress($config, $container);
         $this->loadHooks($config, $container);
     }
 
@@ -109,18 +107,6 @@ class QceWordPressExtension extends Extension
     /**
      * @param Config $configs
      */
-    private function loadWordPress(array $configs, ContainerBuilder $container): void
-    {
-        /** @var string[] $globals */
-        $globals = $configs['globals'];
-        $coreGlobals = ['wp', 'wp_the_query', 'wpdb', 'wp_query'];
-
-        $container->findDefinition('qce_wordpress.wordpress')->setArgument(1, array_merge($coreGlobals, $globals));
-    }
-
-    /**
-     * @param Config $configs
-     */
     private function loadHooks(array $configs, ContainerBuilder $container): void
     {
         $container->registerAttributeForAutoconfiguration(
@@ -137,7 +123,7 @@ class QceWordPressExtension extends Extension
                     'accepted_args' => $hook->acceptedArgs ?? count($methodReflector->getParameters()),
                     'method' => $methodReflector->getName(),
                 ];
-                $definition->addTag('qce_wordpress.wordpress_hook', $args);
+                $definition->addTag('qce_wordpress.hook', $args);
             });
     }
 
