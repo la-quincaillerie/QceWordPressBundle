@@ -13,33 +13,7 @@ use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
 /**
- * @phpstan-type Config array{
- *   path: array{
- *     wordpress?: string,
- *     content: string,
- *   },
- *   dir: array{
- *     wordpress: string,
- *     content: string,
- *   },
- *   url: array{
- *     home: string,
- *     site: string,
- *     content: string,
- *   },
- *   constants: array<string, string>,
- *   db: array{
- *     url?: string,
- *     dbname?: string,
- *     host: string,
- *     port: string,
- *     user: string,
- *     password: string,
- *     charset: string,
- *     collate: string,
- *     table_prefix: string,
- *   },
- * }
+ * @phpstan-import-type Config from Configuration
  */
 class QceWordPressExtension extends Extension
 {
