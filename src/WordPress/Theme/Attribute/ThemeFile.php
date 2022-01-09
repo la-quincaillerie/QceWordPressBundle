@@ -11,11 +11,11 @@ class ThemeFile
      * @param iterable<string, string> $headers
      */
     public function __construct(
-        public string $target,
+        public string   $target,
         public iterable $headers = [],
     )
     {
-        if(Path::isAbsolute($target) || str_starts_with($this->target = Path::canonicalize($target), '../')){
+        if (Path::isAbsolute($target) || str_starts_with($this->target = Path::canonicalize($target), '../')) {
             throw new \InvalidArgumentException("File cannot be configured outside of the theme directory.");
         }
     }

@@ -11,7 +11,7 @@ class TestConstantManager implements ConstantManagerInterface
 
     public function define(string $name, mixed $value): bool
     {
-        if ($this->defined($name)){
+        if ($this->defined($name)) {
             return false;
         }
         $this->constants[$name] = $value;

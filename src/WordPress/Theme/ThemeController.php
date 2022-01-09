@@ -9,7 +9,7 @@ class ThemeController
      */
     public function __construct(
         public string $controller,
-        public array $headers = [],
+        public array  $headers = [],
     )
     {
     }

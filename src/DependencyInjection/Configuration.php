@@ -149,9 +149,6 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('charset')->defaultValue('utf8mb4')->end()
                         ->scalarNode('collate')->defaultValue('')->end()
                         ->scalarNode('table_prefix')->defaultValue('wp_')->end()
-                    ->end()
-                ->end()
-            ->end()
         ;
     }
 

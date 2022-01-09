@@ -2,9 +2,7 @@
 
 namespace Qce\WordPressBundle\Attribute;
 
-use Attribute;
-
-#[Attribute(Attribute::TARGET_CLASS | Attribute::TARGET_METHOD |  Attribute::IS_REPEATABLE)]
+#[\Attribute(\Attribute::TARGET_CLASS | \Attribute::TARGET_METHOD | \Attribute::IS_REPEATABLE)]
 class WPHook
 {
     public function __construct(

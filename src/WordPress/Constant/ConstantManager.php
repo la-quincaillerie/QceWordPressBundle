@@ -6,8 +6,7 @@ class ConstantManager implements ConstantManagerInterface
 {
     public function define(string $name, mixed $value): bool
     {
-        $success = define($name, $value);
-        return $success;
+        return define($name, $value);
     }
 
     public function defined(string $name): bool
