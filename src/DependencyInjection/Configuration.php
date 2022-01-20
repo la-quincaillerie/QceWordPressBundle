@@ -8,6 +8,46 @@ use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 
+/**
+ * @phpstan-type PathConfig array{
+ *   wordpress?: string,
+ *   content: string,
+ * }
+ * @phpstan-type DirConfig array{
+ *   wordpress: string,
+ *   content: string,
+ * }
+ * @phpstan-type URLConfig array{
+ *   home: string,
+ *   site: string,
+ *   content: string,
+ * }
+ * @phpstan-type DBConfig array{
+ *   url?: string,
+ *   dbname?: string,
+ *   host: string,
+ *   port: string,
+ *   user: string,
+ *   password: string,
+ *   charset: string,
+ *   collate: string,
+ *   table_prefix: string,
+ * }
+ * @phpstan-type ThemeConfig array{
+ *   enabled: bool,
+ *   slug: string,
+ *   headers: array<string, string>,
+ *   static: string,
+ * }
+ * @phpstan-type Config array{
+ *   path: PathConfig,
+ *   dir: DirConfig,
+ *   url: URLConfig,
+ *   constants: array<string, string>,
+ *   db: DBConfig,
+ *   theme: ThemeConfig,
+ * }
+ */
 class Configuration implements ConfigurationInterface
 {
     public function getConfigTreeBuilder(): TreeBuilder
@@ -20,6 +60,7 @@ class Configuration implements ConfigurationInterface
         $this->addURLSection($rootNode);
         $this->addExtraConstantsSection($rootNode);
         $this->addDatabaseSection($rootNode);
+        $this->addThemeSection($rootNode);
 
         return $treeBuilder;
     }
@@ -108,9 +149,20 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('charset')->defaultValue('utf8mb4')->end()
                         ->scalarNode('collate')->defaultValue('')->end()
                         ->scalarNode('table_prefix')->defaultValue('wp_')->end()
-                    ->end()
-                ->end()
-            ->end()
+        ;
+    }
+
+    private function addThemeSection(ArrayNodeDefinition $rootNode): void
+    {
+        $rootNode
+            ->children()
+                ->arrayNode('theme')
+                    ->canBeDisabled()
+                    ->children()
+                        ->scalarNode('slug')->defaultValue('qce-theme')->end()
+                        ->scalarNode('static')->defaultValue('%kernel.project_dir%/theme')->end()
+                        ->arrayNode('headers')
+                            ->scalarPrototype()
         ;
     }
 }

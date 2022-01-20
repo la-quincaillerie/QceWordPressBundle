@@ -17,7 +17,7 @@ class WordPressConfigTest extends TestCase
         $wpConfig = new WordPressConfig(
             'dir',
             'prefix',
-            [ new ConstantProvider(['NAME' => 'value']) ],
+            [new ConstantProvider(['NAME' => 'value'])],
             $this->constantManager,
             new WordPressHooks(),
         );
@@ -48,7 +48,7 @@ class WordPressConfigTest extends TestCase
     {
         global $table_prefix;
         $wpConfig = new WordPressConfig(
-            __DIR__.'/../test-wordpress',
+            __DIR__ . '/../test-wordpress',
             'table_prefix_',
             [],
             $this->constantManager,

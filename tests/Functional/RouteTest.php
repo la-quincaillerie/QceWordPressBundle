@@ -2,7 +2,6 @@
 
 namespace Qce\WordPressBundle\Tests\Functional;
 
-use Qce\WordPressBundle\Controller\WordPressController;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Routing\Router;
 use TestApp\Controller\TestController;

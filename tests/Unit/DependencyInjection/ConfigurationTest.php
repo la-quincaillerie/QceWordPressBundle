@@ -7,11 +7,14 @@ use Qce\WordPressBundle\DependencyInjection\Configuration;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\Definition\Processor;
 
+/**
+ * @phpstan-import-type Config from \Qce\WordPressBundle\DependencyInjection\Configuration
+ */
 class ConfigurationTest extends TestCase
 {
     public const DEFAULT_CONFIG = [
         'url' => 'https://localhost',
-        'dir' => __DIR__.'/../test-wordpress',
+        'dir' => __DIR__ . '/../test-wordpress',
         'db' => 'mysql://db:db@db/db',
     ];
     private Configuration $configuration;
@@ -46,7 +49,7 @@ class ConfigurationTest extends TestCase
 
     /**
      * @param array<string, mixed> $config
-     * @return array<string, mixed>
+     * @return Config
      */
     private function processConfig(array $config = [], bool $withDefault = true): array
     {
@@ -54,7 +57,10 @@ class ConfigurationTest extends TestCase
             $configs[] = self::DEFAULT_CONFIG;
         }
         $configs[] = $config;
-        return $this->processor->processConfiguration($this->configuration, $configs);
+
+        /** @var Config $processed */
+        $processed = $this->processor->processConfiguration($this->configuration, $configs);
+        return $processed;
     }
 
     public function testMissingDatabaseConfig(): void
@@ -75,10 +81,26 @@ class ConfigurationTest extends TestCase
         $this->processConfig($defaultConfig, false);
     }
 
+    public function testThemeConfig(): void
+    {
+        $config = $this->processConfig();
+        self::assertEquals($config['theme'], [
+            'enabled' => true,
+            'static' => '%kernel.project_dir%/theme',
+            'slug' => 'qce-theme',
+            'headers' => [],
+        ]);
+    }
+
+    public function testThemeDisabledConfig(): void
+    {
+        $config = $this->processConfig(['theme' => false]);
+        self::assertFalse($config['theme']['enabled']);
+    }
+
     protected function setUp(): void
     {
         $this->configuration = new Configuration();
         $this->processor = new Processor();
     }
-
 }
