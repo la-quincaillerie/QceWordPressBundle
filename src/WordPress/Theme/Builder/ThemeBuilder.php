@@ -2,51 +2,73 @@
 
 namespace Qce\WordPressBundle\WordPress\Theme\Builder;
 
+use Qce\WordPressBundle\WordPress\Theme\Loader\PSR4Namespace;
 use Qce\WordPressBundle\WordPress\Theme\Theme;
+use Qce\WordPressBundle\WordPress\Theme\ThemeRouteCollection;
 use Symfony\Component\Config\ConfigCacheFactory;
 use Symfony\Component\Config\ConfigCacheFactoryInterface;
+use Symfony\Component\Config\Loader\LoaderInterface;
+use Symfony\Component\Config\Resource\DirectoryResource;
 use Symfony\Component\Filesystem\Filesystem;
 
 class ThemeBuilder
 {
+    private ?PSR4Namespace $annotNamespace = null;
     private ConfigCacheFactoryInterface $configCacheFactory;
 
     public function __construct(
-        private string $themeDir,
-        private Theme  $theme,
-        private bool   $debug = false,
+        private string           $themeDir,
+        private Theme            $theme,
+        private ?LoaderInterface $loader = null,
+        string                   $annotDir = '',
+        string                   $annotNamespace = '',
+        private string           $staticDir = '',
+        private bool             $debug = false,
     )
     {
+        $this->annotNamespace = new PSR4Namespace($annotDir, $annotNamespace);
     }
 
     public function build(): void
     {
         $dir = $this->getThemeDir();
-        $fs = new Filesystem();
 
-        $this->getConfigCacheFactory()->cache($dir . '/style.css', function ($cache) use ($dir, $fs) {
-            if (file_exists($this->theme->getStaticDir())) {
+        $this->getConfigCacheFactory()->cache($dir . '/style.css', function ($cache) use ($dir) {
+            $fs = new Filesystem();
+            $resources = [];
+            if (file_exists($this->staticDir)) {
                 $fs->mirror(
-                    $this->theme->getStaticDir(),
+                    $this->staticDir,
                     $dir,
                     options: ['override' => true, 'delete' => true]
                 );
+                $resources[] = new DirectoryResource($this->staticDir);
             } else {
                 $fs->remove($dir);
             }
-            foreach ($this->theme->getControllers() as $path => $controller) {
-                $filePath = $dir . '/' . $path;
-                if (!file_exists($filePath)) {
-                    $fs->dumpFile($filePath, $this->buildController($path, $controller->headers));
+            if ($themeRoutes = $this->getThemeRoutes()) {
+                foreach ($themeRoutes->all() as $path => $themeRoute) {
+                    $filePath = $dir . '/' . $path;
+                    if (!file_exists($filePath)) {
+                        $fs->dumpFile($filePath, $this->buildController($path, $themeRoute->getHeaders()));
+                    }
                 }
+                array_push($resources, ...$themeRoutes->getResources());
             }
-            $cache->write($this->buildStyle(), $this->theme->getResources());
+            $cache->write($this->buildStyle(), $resources);
         });
     }
 
     public function getThemeDir(): string
     {
         return $this->themeDir . "/" . $this->theme->getSlug();
+    }
+
+    public function getThemeRoutes(): ?ThemeRouteCollection
+    {
+        /** @var ?ThemeRouteCollection $collection */
+        $collection = $this->loader?->load($this->annotNamespace);
+        return $collection;
     }
 
     public function getConfigCacheFactory(): ConfigCacheFactoryInterface
@@ -60,9 +82,9 @@ class ThemeBuilder
     }
 
     /**
-     * @param array<string, string> $headers
+     * @param iterable<string, string> $headers
      */
-    private function buildController(string $path, array $headers): string
+    private function buildController(string $controller, iterable $headers): string
     {
         return strtr(<<<EOF
             <?php
@@ -75,19 +97,19 @@ class ThemeBuilder
 
             if(!defined('ABSPATH') || !isset(\$app)) return; // Prevent direct access
 
-            echo \$app->getContainer()->get('qce_wordpress.theme')->render('FILE_PATH', get_defined_vars());
+            echo \$app->getContainer()->get('qce_wordpress.theme')->render(CONTROLLER, get_defined_vars());
 
             EOF,
             [
+                'CONTROLLER' => var_export($controller, true),
                 'HEADERS' => $this->formatHeaders($headers),
-                'FILE_PATH' => $path,
             ]);
     }
 
     /**
-     * @param array<string, string> $headers
+     * @param iterable<string, string> $headers
      */
-    private function formatHeaders(array $headers): string
+    private function formatHeaders(iterable $headers): string
     {
         $headersComment = '';
         foreach ($headers as $key => $value) {

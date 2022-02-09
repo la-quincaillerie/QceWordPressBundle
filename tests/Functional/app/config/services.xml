@@ -21,5 +21,8 @@
             db="mysql://db:db@db/db"
     >
         <qcewp:dir content="%kernel.cache_dir%/wp-content"/>
+        <qcewp:theme>
+            <qcewp:annotations namespace="TestApp\Controller\" directory="%kernel.project_dir%/Controller"/>
+        </qcewp:theme>
     </qcewp:config>
 </container>

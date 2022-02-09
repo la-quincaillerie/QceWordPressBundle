@@ -5,7 +5,7 @@ namespace Qce\WordPressBundle\DependencyInjection;
 use Qce\WordPressBundle\Attribute\WPHook;
 use Qce\WordPressBundle\WordPress\Constant\ConstantProviderInterface;
 use Qce\WordPressBundle\WordPress\Constant\Provider\ConstantProvider;
-use Qce\WordPressBundle\WordPress\Theme\Attribute\ThemeFile;
+use Qce\WordPressBundle\WordPress\Theme\Attribute\ThemeRoute;
 use Qce\WordPressBundle\WordPress\Theme\ThemeController;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\FileLocator;
@@ -121,24 +121,11 @@ class QceWordPressExtension extends Extension
         $themeDefinition = $container->findDefinition('qce_wordpress.theme');
         $themeDefinition->setArgument(0, $config['slug']);
         $themeDefinition->setArgument(1, $config['headers']);
-        $themeDefinition->setArgument(3, $config['static']);
 
-        $container->registerAttributeForAutoconfiguration(
-            ThemeFile::class,
-            function (ChildDefinition $definition, ThemeFile $file, \Reflector $reflector) use ($themeDefinition) {
-                $methodReflector = match (true) {
-                    $reflector instanceof \ReflectionMethod => $reflector,
-                    $reflector instanceof \ReflectionClass && $reflector->hasMethod('__invoke') => $reflector->getMethod('__invoke'),
-                    default => throw new InvalidConfigurationException(sprintf("%s can only be used on methods or invokable services.", ThemeFile::class))
-                };
-                $controller = $methodReflector->class . '::' . $methodReflector->name;
-
-                /** @var array<string, Definition> $controllers */
-                $controllers = $themeDefinition->getArgument(2);
-                $controllers[$file->target] = new Definition(ThemeController::class, [$controller, $file->headers]);
-                $themeDefinition->replaceArgument(2, $controllers);
-            }
-        );
+        $themeBuilderDefinition = $container->findDefinition('qce_wordpress.theme.builder');
+        $themeBuilderDefinition->setArgument(3, $config['annotations']['directory']);
+        $themeBuilderDefinition->setArgument(4, $config['annotations']['namespace']);
+        $themeBuilderDefinition->setArgument(5, $config['static']);
     }
 
     public function getAlias(): string

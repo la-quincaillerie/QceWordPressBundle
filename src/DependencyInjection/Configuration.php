@@ -37,6 +37,10 @@ use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
  *   enabled: bool,
  *   slug: string,
  *   headers: array<string, string>,
+ *   annotations: array{
+ *      namespace: string,
+ *      directory: string,
+ *   },
  *   static: string,
  * }
  * @phpstan-type Config array{
@@ -160,9 +164,15 @@ class Configuration implements ConfigurationInterface
                     ->canBeDisabled()
                     ->children()
                         ->scalarNode('slug')->defaultValue('qce-theme')->end()
-                        ->scalarNode('static')->defaultValue('%kernel.project_dir%/theme')->end()
                         ->arrayNode('headers')
-                            ->scalarPrototype()
+                            ->scalarPrototype()->end()
+                        ->end()
+                        ->scalarNode('static')->defaultValue('%kernel.project_dir%/theme')->end()
+                        ->arrayNode('annotations')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->scalarNode('namespace')->defaultValue('App\\')->end()
+                                ->scalarNode('directory')->defaultValue('%kernel.project_dir%/src')
         ;
     }
 }

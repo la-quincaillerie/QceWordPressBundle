@@ -84,12 +84,16 @@ class ConfigurationTest extends TestCase
     public function testThemeConfig(): void
     {
         $config = $this->processConfig();
-        self::assertEquals($config['theme'], [
+        self::assertEquals([
             'enabled' => true,
             'static' => '%kernel.project_dir%/theme',
             'slug' => 'qce-theme',
             'headers' => [],
-        ]);
+            'annotations' => [
+                'namespace' => 'App\\',
+                'directory' => '%kernel.project_dir%/src',
+            ]
+        ], $config['theme']);
     }
 
     public function testThemeDisabledConfig(): void
