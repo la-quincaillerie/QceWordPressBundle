@@ -10,7 +10,7 @@ use Qce\WordPressBundle\WordPress\Constant\ConstantManagerInterface;
 use Qce\WordPressBundle\WordPress\Constant\ConstantProviderInterface;
 use Qce\WordPressBundle\WordPress\Constant\Provider\ConstantProvider;
 use Qce\WordPressBundle\WordPress\Constant\Provider\DatabaseConstantProvider;
-use Qce\WordPressBundle\WordPress\Theme\Attribute\ThemeFile;
+use Qce\WordPressBundle\WordPress\Theme\Attribute\ThemeRoute;
 use Qce\WordPressBundle\WordPress\Theme\Theme;
 use Qce\WordPressBundle\WordPress\WordPress;
 use Qce\WordPressBundle\WordPress\WordPressConfig;
@@ -224,23 +224,6 @@ class QceWordPressExtensionTest extends TestCase
         self::assertTrue($definition->hasTag('qce_wordpress.hook'));
         $hookTags = array_filter($definition->getTag('qce_wordpress.hook'), static fn($tag) => $tag['name'] === 'setup_theme');
         self::assertCount(1, $hookTags);
-    }
-
-    public function testAutoConfiguredThemeFiles(): void
-    {
-        $this->extension->load(self::DEFAULT_CONFIGS, $this->container);
-        $callback = $this->container->getAutoconfiguredAttributes()[ThemeFile::class];
-
-        $callback(new ChildDefinition(''), new ThemeFile('theme-file.php', ['header' => 'value']), new \ReflectionMethod(__METHOD__));
-
-        /** @var array<string, Definition> $controllers */
-        $controllers = $this->container->findDefinition('qce_wordpress.theme')->getArgument(2);
-
-        self::assertArrayHasKey('theme-file.php', $controllers);
-        self::assertEquals([
-            __METHOD__,
-            ['header' => 'value']
-        ], $controllers['theme-file.php']->getArguments());
     }
 
     protected function setUp(): void

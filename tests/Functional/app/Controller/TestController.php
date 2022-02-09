@@ -2,7 +2,7 @@
 
 namespace TestApp\Controller;
 
-use Qce\WordPressBundle\WordPress\Theme\Attribute\ThemeFile;
+use Qce\WordPressBundle\WordPress\Theme\Attribute\ThemeRoute;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -15,7 +15,7 @@ class TestController extends AbstractController
         return $this->json('Custom response');
     }
 
-    #[ThemeFile('test-file.php')]
+    #[ThemeRoute('test-file.php')]
     public function index(): Response
     {
         return $this->json('Test');
