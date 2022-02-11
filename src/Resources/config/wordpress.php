@@ -6,6 +6,7 @@ use Qce\WordPressBundle\Controller\WordPressController;
 use Qce\WordPressBundle\WordPress\Constant\ConstantManager;
 use Qce\WordPressBundle\WordPress\Constant\Provider\ConstantProvider;
 use Qce\WordPressBundle\WordPress\Constant\Provider\DatabaseConstantProvider;
+use Qce\WordPressBundle\WordPress\Constant\Provider\DirectoryConstantProvider;
 use Qce\WordPressBundle\WordPress\WordPress;
 use Qce\WordPressBundle\WordPress\WordPressConfig;
 use Qce\WordPressBundle\WordPress\WordPressHooks;
@@ -26,8 +27,10 @@ return static function (ContainerConfigurator $container) {
                 'WP_HOME' => param('qce_wordpress.url.home'),
                 'WP_SITEURL' => param('qce_wordpress.url.site'),
                 'WP_CONTENT_URL' => param('qce_wordpress.url.content'),
-                'WP_CONTENT_DIR' => param('qce_wordpress.dir.content'),
             ]])
+            ->tag('qce_wordpress.constant_provider')
+        ->set('qce_wordpress.constant_providers.directories', DirectoryConstantProvider::class)
+            ->args([param('qce_wordpress.dir.content')])
             ->tag('qce_wordpress.constant_provider')
         ->set('qce_wordpress.constant_providers.database', DatabaseConstantProvider::class)
             ->args([abstract_arg('qce_wordpress.db')])

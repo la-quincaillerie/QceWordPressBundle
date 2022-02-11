@@ -10,7 +10,7 @@ use Qce\WordPressBundle\WordPress\Constant\ConstantManagerInterface;
 use Qce\WordPressBundle\WordPress\Constant\ConstantProviderInterface;
 use Qce\WordPressBundle\WordPress\Constant\Provider\ConstantProvider;
 use Qce\WordPressBundle\WordPress\Constant\Provider\DatabaseConstantProvider;
-use Qce\WordPressBundle\WordPress\Theme\Attribute\ThemeRoute;
+use Qce\WordPressBundle\WordPress\Constant\Provider\DirectoryConstantProvider;
 use Qce\WordPressBundle\WordPress\Theme\Theme;
 use Qce\WordPressBundle\WordPress\WordPress;
 use Qce\WordPressBundle\WordPress\WordPressConfig;
@@ -18,7 +18,6 @@ use Qce\WordPressBundle\WordPress\WordPressHooks;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Definition;
 
 class QceWordPressExtensionTest extends TestCase
 {
@@ -81,7 +80,9 @@ class QceWordPressExtensionTest extends TestCase
                 'WP_HOME' => 'https://localhost',
                 'WP_SITEURL' => 'https://localhost/test-wordpress',
                 'WP_CONTENT_URL' => 'https://localhost/wp-bundles',
-                'WP_CONTENT_DIR' => __DIR__ . '/../test-wordpress/../wp-bundles',
+            ]],
+            ['directories', DirectoryConstantProvider::class, [
+                'WP_CONTENT_DIR' => dirname(__DIR__) . '/wp-bundles',
             ]],
             ['extra', ConstantProvider::class, [
                 'EXTRA_1' => 'extra_1',
