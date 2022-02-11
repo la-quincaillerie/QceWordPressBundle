@@ -3,6 +3,28 @@
     "description": "Integrates WordPress into Symfony.",
     "type": "symfony-bundle",
     "license": "MIT",
+    "authors": [
+        {
+            "name": "Louis Boulagnon",
+            "email": "louis@la-quincaillerie.fr"
+        }
+    ],
+    "require": {
+        "roots/wordpress": "^5.8",
+        "symfony/config": "^6.0",
+        "symfony/dependency-injection": "^6.0",
+        "symfony/http-kernel": "^6.0"
+    },
+    "require-dev": {
+        "phpstan/extension-installer": "^1.1",
+        "phpstan/phpstan": "^1.2",
+        "phpstan/phpstan-phpunit": "^1.0",
+        "phpstan/phpstan-symfony": "^1.0",
+        "roave/security-advisories": "dev-latest",
+        "symfony/filesystem": "^6.0",
+        "symfony/framework-bundle": "^6.0",
+        "symfony/phpunit-bridge": "^6.0"
+    },
     "autoload": {
         "psr-4": {
             "Qce\\WordPressBundle\\": "src/"
@@ -13,10 +35,10 @@
             "Qce\\WordPressBundle\\Tests\\": "tests/"
         }
     },
-    "authors": [
-        {
-            "name": "Louis Boulagnon",
-            "email": "louis@la-quincaillerie.fr"
-        }
-    ]
+    "config": {
+        "preferred-install": {
+            "*": "dist"
+        },
+        "sort-packages": true
+    }
 }

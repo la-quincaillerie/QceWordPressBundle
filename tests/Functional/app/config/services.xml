@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:framework="http://symfony.com/schema/dic/symfony"
+           xmlns:qcewp="http://example.org/schema/dic/qce_wordpress"
+           xmlns="http://symfony.com/schema/dic/services"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services
+                https://symfony.com/schema/dic/services/services-1.0.xsd"
+>
+    <services>
+        <defaults autowire="true" autoconfigure="true"/>
+        <prototype namespace="TestApp\"
+                   resource="../*"
+                   exclude="../{TestKernel.php,bootstrap.php,config,var}"
+        />
+    </services>
+
+    <framework:config test="true"/>
+
+    <qcewp:config
+            url="https://localhost"
+            db="mysql://db:db@db/db"
+    >
+        <qcewp:dir content="%kernel.cache_dir%/wp-content"/>
+        <qcewp:theme>
+            <qcewp:annotations namespace="TestApp\Controller\" directory="%kernel.project_dir%/Controller"/>
+        </qcewp:theme>
+    </qcewp:config>
+</container>
