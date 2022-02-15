@@ -50,7 +50,7 @@ class ThemeBuilder
                 foreach ($themeRoutes->all() as $path => $themeRoute) {
                     $filePath = $dir . '/' . $path;
                     if (!file_exists($filePath)) {
-                        $fs->dumpFile($filePath, $this->buildController($path, $themeRoute->getHeaders()));
+                        $fs->dumpFile($filePath, $this->buildController($themeRoute->getController(), $themeRoute->getHeaders()));
                     }
                 }
                 array_push($resources, ...$themeRoutes->getResources());
