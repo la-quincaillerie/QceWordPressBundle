@@ -34,8 +34,8 @@ class QceWordPressExtension extends Extension
         $this->loadPathParameters($config, $container);
         $this->loadDirParameters($config, $container);
         $this->loadURLParameters($config, $container);
+        $container->setParameter('qce_wordpress.table_prefix', $config['db']['table_prefix']);
 
-        $container->getDefinition('qce_wordpress.wordpress.config')->setArgument(1, $config['db']['table_prefix']);
         $this->loadConstantProviders($config, $container);
         $this->loadHooks($config, $container);
         $this->loadTheme($config['theme'], $container, $loader);
