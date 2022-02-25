@@ -15,8 +15,6 @@ return static function (ContainerConfigurator $container) {
     $container->services()
         ->set('qce_wordpress.wordpress.config', WordPressConfig::class)
             ->args([
-                param('qce_wordpress.dir.wordpress'),
-                abstract_arg('qce_wordpress.table_prefix'),
                 tagged_iterator('qce_wordpress.constant_provider'),
                 service('qce_wordpress.constant_manager'),
                 service('qce_wordpress.wordpress.hooks')

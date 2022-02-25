@@ -15,8 +15,6 @@ class WordPressConfigTest extends TestCase
     public function testDefinesConstants(): void
     {
         $wpConfig = new WordPressConfig(
-            'dir',
-            'prefix',
             [new ConstantProvider(['NAME' => 'value'])],
             $this->constantManager,
             new WordPressHooks(),
@@ -30,8 +28,6 @@ class WordPressConfigTest extends TestCase
     public function testDefinesConstantsOverride(): void
     {
         $wpConfig = new WordPressConfig(
-            'dir',
-            'prefix',
             [
                 new ConstantProvider(['NAME' => 'value1']),
                 new ConstantProvider(['NAME' => 'value2']),
@@ -42,21 +38,6 @@ class WordPressConfigTest extends TestCase
         $wpConfig->defineConstants();
 
         self::assertSame('value2', $this->constantManager->constant('NAME'));
-    }
-
-    public function testIncludeSettings(): void
-    {
-        global $table_prefix;
-        $wpConfig = new WordPressConfig(
-            __DIR__ . '/../test-wordpress',
-            'table_prefix_',
-            [],
-            $this->constantManager,
-            new WordPressHooks(),
-        );
-        $wpConfig->includeSettings();
-
-        self::assertSame('table_prefix_', $table_prefix);
     }
 
     public function setUp(): void

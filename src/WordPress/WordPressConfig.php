@@ -14,8 +14,6 @@ class WordPressConfig
      * @param iterable<ConstantProviderInterface> $constantProviders
      */
     public function __construct(
-        private string                   $wordpressDir,
-        private string                   $tablePrefix,
         private iterable                 $constantProviders,
         private ConstantManagerInterface $constantManager,
         private WordPressHooks           $hooksManager,
@@ -28,7 +26,6 @@ class WordPressConfig
         // We register the hooks before loading the settings because some filters and actions are triggered there.
         $this->registerHooks();
         $this->defineConstants();
-        $this->includeSettings();
     }
 
     public function registerHooks(): void
@@ -55,12 +52,6 @@ class WordPressConfig
             $constants[] = (array)$p->getConstants();
         }
         return array_merge(...$constants);
-    }
-
-    public function includeSettings(): void
-    {
-        $table_prefix = $this->tablePrefix;
-        include $this->wordpressDir . "/wp-settings.php";
     }
 
     public function addHook(string $name, callable $callback, int $priority, int $acceptedArgs): void
