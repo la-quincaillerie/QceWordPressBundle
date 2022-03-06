@@ -102,6 +102,18 @@ class ConfigurationTest extends TestCase
         self::assertFalse($config['theme']['enabled']);
     }
 
+    public function testEnableTwig(): void
+    {
+        $config = $this->processConfig(['twig' => true]);
+        self::assertTrue($config['twig']['enabled']);
+    }
+
+    public function testDisableTwig(): void
+    {
+        $config = $this->processConfig(['twig' => false]);
+        self::assertFalse($config['twig']['enabled']);
+    }
+
     protected function setUp(): void
     {
         $this->configuration = new Configuration();

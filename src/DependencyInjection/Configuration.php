@@ -7,6 +7,8 @@ use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Twig\Environment;
 
 /**
  * @phpstan-type PathConfig array{
@@ -43,6 +45,9 @@ use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
  *   },
  *   static: string,
  * }
+ * @phpstan-type TwigConfig array{
+ *   enabled: bool,
+ * }
  * @phpstan-type Config array{
  *   path: PathConfig,
  *   dir: DirConfig,
@@ -50,6 +55,7 @@ use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
  *   constants: array<string, string>,
  *   db: DBConfig,
  *   theme: ThemeConfig,
+ *   twig: TwigConfig,
  * }
  */
 class Configuration implements ConfigurationInterface
@@ -65,6 +71,7 @@ class Configuration implements ConfigurationInterface
         $this->addExtraConstantsSection($rootNode);
         $this->addDatabaseSection($rootNode);
         $this->addThemeSection($rootNode);
+        $this->addTwigSection($rootNode);
 
         return $treeBuilder;
     }
@@ -173,6 +180,16 @@ class Configuration implements ConfigurationInterface
                             ->children()
                                 ->scalarNode('namespace')->defaultValue('App\\')->end()
                                 ->scalarNode('directory')->defaultValue('%kernel.project_dir%/src')
+        ;
+    }
+
+    private function addTwigSection(ArrayNodeDefinition $rootNode): void
+    {
+        $twigAvailable = ContainerBuilder::willBeAvailable('twig/twig', Environment::class, ['symfony/twig-bundle']);
+        $rootNode
+            ->children()
+                ->arrayNode('twig')
+                    ->{$twigAvailable ? 'canBeDisabled' : 'canBeEnabled'}()
         ;
     }
 }
