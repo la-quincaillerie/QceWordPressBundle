@@ -35,17 +35,16 @@ class QceWordPressExtensionTest extends TestCase
     {
         $this->extension->load(self::DEFAULT_CONFIGS, $this->container);
         self::assertTrue($this->container->has('qce_wordpress.constant_manager'));
-        self::assertInstanceOf(ConstantManagerInterface::class, $this->container->get('qce_wordpress.constant_manager'));
+        self::assertTrue(\is_subclass_of($this->container->findDefinition('qce_wordpress.constant_manager')->getClass() ?? '', ConstantManagerInterface::class));
     }
 
     /**
-     * @param class-string $serviceClass
-     * @param array<string, mixed> $constants
+     * @param class-string $expectedServiceClass
      * @param array<string, mixed> $extraConfig
      *
      * @dataProvider getConstantProviders
      */
-    public function testContantProviderResult(string $serviceName, string $serviceClass, array $constants, array $extraConfig = []): void
+    public function testContantProviderResult(string $serviceName, string $expectedServiceClass, array $extraConfig = []): void
     {
         $configs = self::DEFAULT_CONFIGS;
         if (!empty($extraConfig)) {
@@ -54,43 +53,25 @@ class QceWordPressExtensionTest extends TestCase
         $this->extension->load($configs, $this->container);
         $serviceId = 'qce_wordpress.constant_providers.' . $serviceName;
         self::assertTrue($this->container->has($serviceId));
-        self::assertTrue($this->container->findDefinition($serviceId)->hasTag('qce_wordpress.constant_provider'));
 
-        $service = $this->container->get($serviceId);
-        self::assertInstanceOf(ConstantProviderInterface::class, $service);
-        self::assertInstanceOf($serviceClass, $service);
-        self::assertEquals($constants, $service->getConstants());
+        $serviceDefinition = $this->container->findDefinition($serviceId);
+        $serviceClass = $serviceDefinition->getClass();
+        self::assertTrue($serviceDefinition->hasTag('qce_wordpress.constant_provider'));
+        self::assertNotNull($serviceClass);
+        self::assertTrue(\is_subclass_of($serviceClass, ConstantProviderInterface::class, true));
+        self::assertSame($expectedServiceClass, $serviceClass);
     }
 
     /**
-     * @return array{string, class-string, array<string, mixed>, 3?:array<string, mixed>}[]
+     * @return array{string, class-string, 2?:array<string, mixed>}[]
      */
     public function getConstantProviders(): array
     {
         return [
-            ['database', DatabaseConstantProvider::class, [
-                'DB_HOST' => 'db:3306',
-                'DB_NAME' => 'db',
-                'DB_USER' => 'db',
-                'DB_PASSWORD' => 'db',
-                'DB_CHARSET' => 'utf8mb4',
-                'DB_COLLATE' => '',
-            ]],
-            ['default', ConstantProvider::class, [
-                'WP_HOME' => 'https://localhost',
-                'WP_SITEURL' => 'https://localhost/test-wordpress',
-                'WP_CONTENT_URL' => 'https://localhost/wp-bundles',
-            ]],
-            ['directories', DirectoryConstantProvider::class, [
-                'WP_CONTENT_DIR' => dirname(__DIR__) . '/wp-bundles',
-            ]],
-            ['extra', ConstantProvider::class, [
-                'EXTRA_1' => 'extra_1',
-                'EXTRA_2' => 'extra_2'
-            ], ['constants' => [
-                'EXTRA_1' => 'extra_1',
-                'EXTRA_2' => 'extra_2'
-            ]]]
+            ['database', DatabaseConstantProvider::class],
+            ['default', ConstantProvider::class],
+            ['directories', DirectoryConstantProvider::class],
+            ['extra', ConstantProvider::class, ['constants' => ['EXTRA_1' => 'extra_1']]],
         ];
     }
 
@@ -113,14 +94,14 @@ class QceWordPressExtensionTest extends TestCase
         $this->extension->load(self::DEFAULT_CONFIGS, $this->container);
         self::assertTrue($this->container->has('qce_wordpress.wordpress.config'));
         self::assertTrue($this->container->findDefinition('qce_wordpress.wordpress.config')->isPublic());
-        self::assertInstanceOf(WordPressConfig::class, $this->container->get('qce_wordpress.wordpress.config'));
+        self::assertSame(WordPressConfig::class, $this->container->findDefinition('qce_wordpress.wordpress.config')->getClass());
     }
 
     public function testWordPress(): void
     {
         $this->extension->load(self::DEFAULT_CONFIGS, $this->container);
         self::assertTrue($this->container->has('qce_wordpress.wordpress'));
-        self::assertInstanceOf(WordPress::class, $this->container->get('qce_wordpress.wordpress'));
+        self::assertSame(WordPress::class, $this->container->findDefinition('qce_wordpress.wordpress')->getClass());
     }
 
     public function testWordPressController(): void
@@ -136,9 +117,11 @@ class QceWordPressExtensionTest extends TestCase
         $this->extension->load(self::DEFAULT_CONFIGS, $this->container);
         self::assertTrue($this->container->has('qce_wordpress.wordpress.hooks'));
         self::assertTrue($this->container->has(WordPressHooks::class));
-        self::assertTrue($this->container->findDefinition('qce_wordpress.wordpress.hooks')->isPublic());
-        self::assertInstanceOf(WordPressHooks::class, $this->container->get('qce_wordpress.wordpress.hooks'));
-        self::assertContains(dirname(__DIR__) . '/test-wordpress/wp-includes/plugin.php', get_included_files());
+        $definition = $this->container->findDefinition('qce_wordpress.wordpress.hooks');
+        self::assertTrue($definition->isPublic());
+        self::assertSame(WordPressHooks::class, $definition->getClass());
+        $pluginFile = realpath($this->container->getParameterBag()->resolveValue($definition->getFile()));
+        self::assertSame(dirname(__DIR__) . '/test-wordpress/wp-includes/plugin.php', $pluginFile);
     }
 
     public function testAutoConfiguredHooks(): void
@@ -207,7 +190,7 @@ class QceWordPressExtensionTest extends TestCase
     {
         $this->extension->load(self::DEFAULT_CONFIGS, $this->container);
         self::assertTrue($this->container->has('qce_wordpress.theme'));
-        self::assertInstanceOf(Theme::class, $this->container->get('qce_wordpress.theme'));
+        self::assertSame(Theme::class, $this->container->findDefinition('qce_wordpress.theme')->getClass());
     }
 
     public function testNoTheme(): void
