@@ -8,5 +8,7 @@ use Qce\WordPressBundle\Bridge\Twig\WordPressVariable;
 return static function (ContainerConfigurator $container) {
     $container->services()
         ->set('qce_wordpress.twig.extension', WordPressExtension::class)
-            ->tag('twig.extension');
+            ->tag('twig.extension')
+
+        ->set('qce_wordpress.twig.wp_variable', WordPressVariable::class);
 };

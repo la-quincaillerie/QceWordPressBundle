@@ -15,4 +15,13 @@ class TwigBridgeTest extends KernelTestCase
         $twig = self::getContainer()->get('twig');
         self::assertTrue($twig->hasExtension(WordPressExtension::class));
     }
+
+    public function testRegisteredWordPressGlobalVariable(): void
+    {
+        /** @var Environment $twig */
+        $twig = self::getContainer()->get('twig');
+        $globals = $twig->getGlobals();
+        self::assertArrayHasKey('wp', $globals);
+        self::assertInstanceOf(WordPressVariable::class, $globals['wp']);
+    }
 }

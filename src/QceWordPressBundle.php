@@ -3,6 +3,7 @@
 namespace Qce\WordPressBundle;
 
 use Qce\WordPressBundle\DependencyInjection\Compiler\ThemeResolverPass;
+use Qce\WordPressBundle\DependencyInjection\Compiler\TwigPass;
 use Qce\WordPressBundle\DependencyInjection\Compiler\WordPressHookPass;
 use Qce\WordPressBundle\DependencyInjection\QceWordPressExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -15,6 +16,7 @@ class QceWordPressBundle extends Bundle
     {
         $container->addCompilerPass(new WordPressHookPass());
         $container->addCompilerPass(new ThemeResolverPass());
+        $container->addCompilerPass(new TwigPass());
     }
 
     public function getContainerExtension(): ExtensionInterface

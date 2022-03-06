@@ -5,6 +5,7 @@ namespace Qce\WordPressBundle\Tests\Unit\DependencyInjection;
 use PHPUnit\Framework\TestCase;
 use Qce\WordPressBundle\Attribute\WPHook;
 use Qce\WordPressBundle\Bridge\Twig\WordPressExtension;
+use Qce\WordPressBundle\Bridge\Twig\WordPressVariable;
 use Qce\WordPressBundle\Controller\WordPressController;
 use Qce\WordPressBundle\DependencyInjection\QceWordPressExtension;
 use Qce\WordPressBundle\WordPress\Constant\ConstantManagerInterface;
@@ -220,6 +221,10 @@ class QceWordPressExtensionTest extends TestCase
         $extensionDefinition = $this->container->findDefinition('qce_wordpress.twig.extension');
         self::assertTrue($extensionDefinition->hasTag('twig.extension'));
         self::assertSame(WordPressExtension::class, $extensionDefinition->getClass());
+
+        self::assertTrue($this->container->hasDefinition('qce_wordpress.twig.wp_variable'));
+        $wpVariableDefinition = $this->container->findDefinition('qce_wordpress.twig.wp_variable');
+        self::assertSame(WordPressVariable::class, $wpVariableDefinition->getClass());
     }
 
     protected function setUp(): void
