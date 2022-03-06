@@ -60,7 +60,7 @@ class ThemeBuilderTest extends TestCase
         $themeBuilder = new ThemeBuilder($this->dir, new Theme($this->themeSlug), debug: false);
         $themeBuilder->build();
 
-        $fs->touch("$staticDir/test.txt", time() + 5);
+        $fs->touch("$staticDir/test.txt", \time() + 5);
         $themeBuilder->build();
 
         self::assertFileDoesNotExist("$this->dir/$this->themeSlug/test.txt");
@@ -76,7 +76,7 @@ class ThemeBuilderTest extends TestCase
         $themeBuilder->build();
         self::assertFileDoesNotExist("$staticDir/test.txt");
 
-        $fs->touch("$staticDir/test.txt", time() + 5);
+        $fs->touch("$staticDir/test.txt", \time() + 5);
         $themeBuilder->build();
         self::assertFileExists("$this->dir/$this->themeSlug/test.txt");
     }
@@ -94,7 +94,7 @@ class ThemeBuilderTest extends TestCase
         self::assertFileExists("$this->dir/$this->themeSlug/test.txt");
 
         $fs->remove($staticDir . '/test.txt');
-        $fs->touch($staticDir, time() + 5); // simulate some delay to when file was deleted
+        $fs->touch($staticDir, \time() + 5); // simulate some delay to when file was deleted
         $themeBuilder->build();
         self::assertFileDoesNotExist("$this->dir/$this->themeSlug/test.txt");
     }
@@ -118,7 +118,7 @@ class ThemeBuilderTest extends TestCase
 
     public function setUp(): void
     {
-        $this->dir = sys_get_temp_dir();
+        $this->dir = \sys_get_temp_dir();
         $this->themeSlug = 'qcewordpressbundle-theme';
     }
 

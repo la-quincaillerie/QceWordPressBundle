@@ -15,7 +15,7 @@ class ThemeRoute
         public iterable $headers = [],
     )
     {
-        if (Path::isAbsolute($path) || str_starts_with($this->path = Path::canonicalize($path), '../')) {
+        if (Path::isAbsolute($path) || \str_starts_with($this->path = Path::canonicalize($path), '../')) {
             throw new \InvalidArgumentException("File cannot be configured outside of the theme directory.");
         }
     }

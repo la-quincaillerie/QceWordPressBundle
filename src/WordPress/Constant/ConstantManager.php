@@ -2,6 +2,9 @@
 
 namespace Qce\WordPressBundle\WordPress\Constant;
 
+/**
+ * @codeCoverageIgnore -- Untestable class that was only added not to use define directly in unit tests
+ */
 class ConstantManager implements ConstantManagerInterface
 {
     public function define(string $name, mixed $value): bool

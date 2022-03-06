@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "roots/wordpress": "^5.8",
+        "roots/wordpress": "^5.9",
         "symfony/config": "^6.0",
         "symfony/dependency-injection": "^6.0",
         "symfony/filesystem": "^6.0",
@@ -18,9 +18,9 @@
     },
     "require-dev": {
         "phpstan/extension-installer": "^1.1",
-        "phpstan/phpstan": "^1.2",
+        "phpstan/phpstan": "^1.4",
         "phpstan/phpstan-phpunit": "^1.0",
-        "phpstan/phpstan-symfony": "^1.0",
+        "phpstan/phpstan-symfony": "^1.1",
         "roave/security-advisories": "dev-latest",
         "symfony/framework-bundle": "^6.0",
         "symfony/phpunit-bridge": "^6.0"
@@ -39,6 +39,10 @@
         "preferred-install": {
             "*": "dist"
         },
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "roots/wordpress-core-installer": true,
+            "phpstan/extension-installer": true
+        }
     }
 }

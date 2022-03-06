@@ -4,7 +4,6 @@ namespace Qce\WordPressBundle\Tests\Unit\WordPress\Theme;
 
 use PHPUnit\Framework\TestCase;
 use Qce\WordPressBundle\WordPress\Theme\Theme;
-use Qce\WordPressBundle\WordPress\Theme\ThemeController;
 use Symfony\Component\HttpKernel\Controller\ControllerReference;
 use Symfony\Component\HttpKernel\Fragment\FragmentHandler;
 
