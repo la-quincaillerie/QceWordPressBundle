@@ -4,6 +4,7 @@ namespace Qce\WordPressBundle\Tests\Unit\DependencyInjection;
 
 use PHPUnit\Framework\TestCase;
 use Qce\WordPressBundle\Attribute\WPHook;
+use Qce\WordPressBundle\Bridge\Twig\WordPressExtension;
 use Qce\WordPressBundle\Controller\WordPressController;
 use Qce\WordPressBundle\DependencyInjection\QceWordPressExtension;
 use Qce\WordPressBundle\WordPress\Constant\ConstantManagerInterface;
@@ -21,7 +22,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class QceWordPressExtensionTest extends TestCase
 {
-    public const DEFAULT_CONFIGS = [ConfigurationTest::DEFAULT_CONFIG, ['theme' => ['static' => 'test']]];
+    public const DEFAULT_CONFIGS = [ConfigurationTest::DEFAULT_CONFIG, ['theme' => ['static' => 'test'], 'twig' => false]];
     private QceWordPressExtension $extension;
     private ContainerBuilder $container;
 
@@ -208,6 +209,17 @@ class QceWordPressExtensionTest extends TestCase
         self::assertTrue($definition->hasTag('qce_wordpress.hook'));
         $hookTags = array_filter($definition->getTag('qce_wordpress.hook'), static fn($tag) => $tag['name'] === 'setup_theme');
         self::assertCount(1, $hookTags);
+    }
+
+    public function testTwigBridge(): void
+    {
+        $twigConfig = [['twig' => true]];
+        $this->extension->load(\array_merge(self::DEFAULT_CONFIGS, $twigConfig), $this->container);
+
+        self::assertTrue($this->container->hasDefinition('qce_wordpress.twig.extension'));
+        $extensionDefinition = $this->container->findDefinition('qce_wordpress.twig.extension');
+        self::assertTrue($extensionDefinition->hasTag('twig.extension'));
+        self::assertSame(WordPressExtension::class, $extensionDefinition->getClass());
     }
 
     protected function setUp(): void
