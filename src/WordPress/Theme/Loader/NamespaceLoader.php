@@ -51,13 +51,13 @@ class NamespaceLoader extends FileLoader
                 $prefixLen = \strlen($resource->getPrefix());
             }
 
-            if (!preg_match($extRegexp, $path, $m) || !$info->isReadable()) {
+            if (!\preg_match($extRegexp, $path, $m) || !$info->isReadable()) {
                 continue;
             }
             /** @var class-string $class */
-            $class = $namespace . ltrim(str_replace('/', '\\', substr($path, $prefixLen, -\strlen($m[0]))), '\\');
+            $class = $namespace . \ltrim(\str_replace('/', '\\', \substr($path, $prefixLen, -\strlen($m[0]))), '\\');
 
-            if (!preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*+(?:\\\\[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*+)*+$/', $class)) {
+            if (!\preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*+(?:\\\\[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*+)*+$/', $class)) {
                 continue;
             }
 

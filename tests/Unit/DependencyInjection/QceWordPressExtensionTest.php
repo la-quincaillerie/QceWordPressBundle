@@ -120,8 +120,8 @@ class QceWordPressExtensionTest extends TestCase
         $definition = $this->container->findDefinition('qce_wordpress.wordpress.hooks');
         self::assertTrue($definition->isPublic());
         self::assertSame(WordPressHooks::class, $definition->getClass());
-        $pluginFile = realpath($this->container->getParameterBag()->resolveValue($definition->getFile()));
-        self::assertSame(dirname(__DIR__) . '/test-wordpress/wp-includes/plugin.php', $pluginFile);
+        $pluginFile = \realpath($this->container->getParameterBag()->resolveValue($definition->getFile()));
+        self::assertSame(\dirname(__DIR__) . '/test-wordpress/wp-includes/plugin.php', $pluginFile);
     }
 
     public function testAutoConfiguredHooks(): void
@@ -196,7 +196,7 @@ class QceWordPressExtensionTest extends TestCase
     public function testNoTheme(): void
     {
         $noThemeConfig = [['theme' => false]];
-        $this->extension->load(array_merge(self::DEFAULT_CONFIGS, $noThemeConfig), $this->container);
+        $this->extension->load(\array_merge(self::DEFAULT_CONFIGS, $noThemeConfig), $this->container);
         self::assertFalse($this->container->has('qce_wordpress.theme'));
     }
 

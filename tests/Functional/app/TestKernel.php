@@ -18,14 +18,14 @@ class TestKernel extends Kernel
     {
         $configDir = $this->getConfigDir();
 
-        $container->import($configDir.'/services.xml');
+        $container->import($configDir . '/services.xml');
     }
 
     private function configureRoutes(RoutingConfigurator $routes): void
     {
         $configDir = $this->getConfigDir();
 
-        $routes->import($configDir.'/routes.xml');
+        $routes->import($configDir . '/routes.xml');
     }
 
     public function getProjectDir(): string
