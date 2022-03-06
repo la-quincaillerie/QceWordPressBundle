@@ -5,6 +5,7 @@ parameters:
         - tests
     excludePaths:
         - tests/Functional/app/var
+        - wordpress/wp-admin/includes/noop.php
     bootstrapFiles:
         - vendor/bin/.phpunit/phpunit/vendor/autoload.php
     scanDirectories:
