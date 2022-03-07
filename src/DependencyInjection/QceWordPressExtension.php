@@ -12,6 +12,7 @@ use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
+use Twig\Environment;
 
 /**
  * @phpstan-import-type Config from Configuration
@@ -35,6 +36,7 @@ class QceWordPressExtension extends Extension
         $this->loadConstantProviders($config, $container);
         $this->loadHooks($config, $container);
         $this->loadTheme($config, $container, $loader);
+        $this->loadTwig($config, $container, $loader);
     }
 
     /**
@@ -124,6 +126,22 @@ class QceWordPressExtension extends Extension
         $themeBuilderDefinition->setArgument(3, $themeConfig['annotations']['directory']);
         $themeBuilderDefinition->setArgument(4, $themeConfig['annotations']['namespace']);
         $themeBuilderDefinition->setArgument(5, $themeConfig['static']);
+    }
+
+    /**
+     * @param Config $config
+     */
+    private function loadTwig(array $config, ContainerBuilder $container, LoaderInterface $loader): void
+    {
+        if (!$this->isConfigEnabled($container, $config['twig'])) {
+            return;
+        }
+
+        if (!ContainerBuilder::willBeAvailable('twig/twig', Environment::class, ['symfony/twig-bundle'])) {
+            throw new \LogicException('Twig support cannot be enabled as the Twig bundle is not installed. Try running "composer require symfony/twig-bundle".');
+        }
+
+        $loader->load('twig.php');
     }
 
     public function getAlias(): string

@@ -23,7 +23,11 @@
         "phpstan/phpstan-symfony": "^1.1",
         "roave/security-advisories": "dev-latest",
         "symfony/framework-bundle": "^6.0",
-        "symfony/phpunit-bridge": "^6.0"
+        "symfony/phpunit-bridge": "^6.0",
+        "symfony/twig-bundle": "^6.0"
+    },
+    "suggest": {
+        "symfony/twig-bundle": "To render the theme pages with twig."
     },
     "autoload": {
         "psr-4": {
