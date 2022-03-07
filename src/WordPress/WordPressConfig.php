@@ -51,7 +51,7 @@ class WordPressConfig
         foreach ($this->constantProviders as $p) {
             $constants[] = (array)$p->getConstants();
         }
-        return array_merge(...$constants);
+        return \array_merge(...$constants);
     }
 
     public function addHook(string $name, callable $callback, int $priority, int $acceptedArgs): void

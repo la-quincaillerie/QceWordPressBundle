@@ -3,6 +3,7 @@
 use Qce\WordPressBundle\QceWordPressBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
+use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -18,14 +19,14 @@ class TestKernel extends Kernel
     {
         $configDir = $this->getConfigDir();
 
-        $container->import($configDir.'/services.xml');
+        $container->import($configDir . '/services.xml');
     }
 
     private function configureRoutes(RoutingConfigurator $routes): void
     {
         $configDir = $this->getConfigDir();
 
-        $routes->import($configDir.'/routes.xml');
+        $routes->import($configDir . '/routes.xml');
     }
 
     public function getProjectDir(): string
@@ -37,6 +38,7 @@ class TestKernel extends Kernel
     {
         return [
             new FrameworkBundle(),
+            new TwigBundle(),
             new QceWordPressBundle(),
         ];
     }

@@ -13,7 +13,7 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class ThemeBuilder
 {
-    private ?PSR4Namespace $annotNamespace = null;
+    private ?PSR4Namespace $annotNamespace;
     private ConfigCacheFactoryInterface $configCacheFactory;
 
     public function __construct(

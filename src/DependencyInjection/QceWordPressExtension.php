@@ -5,20 +5,17 @@ namespace Qce\WordPressBundle\DependencyInjection;
 use Qce\WordPressBundle\Attribute\WPHook;
 use Qce\WordPressBundle\WordPress\Constant\ConstantProviderInterface;
 use Qce\WordPressBundle\WordPress\Constant\Provider\ConstantProvider;
-use Qce\WordPressBundle\WordPress\Theme\Attribute\ThemeRoute;
-use Qce\WordPressBundle\WordPress\Theme\ThemeController;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
+use Twig\Environment;
 
 /**
  * @phpstan-import-type Config from Configuration
- * @phpstan-import-type ThemeConfig from Configuration
  */
 class QceWordPressExtension extends Extension
 {
@@ -38,7 +35,8 @@ class QceWordPressExtension extends Extension
 
         $this->loadConstantProviders($config, $container);
         $this->loadHooks($config, $container);
-        $this->loadTheme($config['theme'], $container, $loader);
+        $this->loadTheme($config, $container, $loader);
+        $this->loadTwig($config, $container, $loader);
     }
 
     /**
@@ -108,24 +106,42 @@ class QceWordPressExtension extends Extension
     }
 
     /**
-     * @param ThemeConfig $config
+     * @param Config $config
      */
-    public function loadTheme(array $config, ContainerBuilder $container, LoaderInterface $loader): void
+    private function loadTheme(array $config, ContainerBuilder $container, LoaderInterface $loader): void
     {
-        if (!$config['enabled']) {
+        $themeConfig = $config['theme'];
+
+        if (!$this->isConfigEnabled($container, $themeConfig)) {
             return;
         }
 
         $loader->load('theme.php');
 
         $themeDefinition = $container->findDefinition('qce_wordpress.theme');
-        $themeDefinition->setArgument(0, $config['slug']);
-        $themeDefinition->setArgument(1, $config['headers']);
+        $themeDefinition->setArgument(0, $themeConfig['slug']);
+        $themeDefinition->setArgument(1, $themeConfig['headers']);
 
         $themeBuilderDefinition = $container->findDefinition('qce_wordpress.theme.builder');
-        $themeBuilderDefinition->setArgument(3, $config['annotations']['directory']);
-        $themeBuilderDefinition->setArgument(4, $config['annotations']['namespace']);
-        $themeBuilderDefinition->setArgument(5, $config['static']);
+        $themeBuilderDefinition->setArgument(3, $themeConfig['annotations']['directory']);
+        $themeBuilderDefinition->setArgument(4, $themeConfig['annotations']['namespace']);
+        $themeBuilderDefinition->setArgument(5, $themeConfig['static']);
+    }
+
+    /**
+     * @param Config $config
+     */
+    private function loadTwig(array $config, ContainerBuilder $container, LoaderInterface $loader): void
+    {
+        if (!$this->isConfigEnabled($container, $config['twig'])) {
+            return;
+        }
+
+        if (!ContainerBuilder::willBeAvailable('twig/twig', Environment::class, ['symfony/twig-bundle'])) {
+            throw new \LogicException('Twig support cannot be enabled as the Twig bundle is not installed. Try running "composer require symfony/twig-bundle".');
+        }
+
+        $loader->load('twig.php');
     }
 
     public function getAlias(): string

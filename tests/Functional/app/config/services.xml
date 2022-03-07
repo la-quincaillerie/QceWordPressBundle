@@ -14,7 +14,7 @@
         />
     </services>
 
-    <framework:config test="true"/>
+    <framework:config test="true" secret="secret"/>
 
     <qcewp:config
             url="https://localhost"

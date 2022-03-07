@@ -12,6 +12,6 @@ class AutoConfiguredHookTest extends KernelTestCase
         /** @var WordPressConfig $config */
         $config = self::getContainer()->get('qce_wordpress.wordpress.config');
         $config->registerHooks();
-        self::assertSame('custom_hook_result', apply_filters('custom_hook', ''));
+        self::assertSame('custom_hook_result', \apply_filters('custom_hook', ''));
     }
 }

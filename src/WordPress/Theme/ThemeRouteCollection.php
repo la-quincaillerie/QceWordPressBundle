@@ -45,6 +45,6 @@ class ThemeRouteCollection
      */
     public function getResources(): array
     {
-        return array_values($this->resources);
+        return \array_values($this->resources);
     }
 }
