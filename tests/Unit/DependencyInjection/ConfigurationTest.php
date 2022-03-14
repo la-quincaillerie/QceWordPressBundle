@@ -92,8 +92,25 @@ class ConfigurationTest extends TestCase
             'annotations' => [
                 'namespace' => 'App\\',
                 'directory' => '%kernel.project_dir%/src',
-            ]
+            ],
+            'supports' => [],
         ], $config['theme']);
+    }
+
+    public function testThemeSupport(): void
+    {
+        $config = $this->processConfig([
+            'theme' => [
+                'supports' => [
+                    'feature1',
+                    ['feature' => 'feature2', 'args' => 'argumentValue'],
+                ]
+            ]
+        ]);
+        self::assertSame([
+            ['feature' => 'feature1', 'args' => []],
+            ['feature' => 'feature2', 'args' => 'argumentValue'],
+        ], $config['theme']['supports']);
     }
 
     public function testThemeDisabledConfig(): void

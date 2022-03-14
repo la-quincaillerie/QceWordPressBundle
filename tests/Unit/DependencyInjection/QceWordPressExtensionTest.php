@@ -212,6 +212,22 @@ class QceWordPressExtensionTest extends TestCase
         self::assertCount(1, $hookTags);
     }
 
+    public function testThemeSupportsNoSupport(): void
+    {
+        $this->extension->load(self::DEFAULT_CONFIGS, $this->container);
+        self::assertFalse($this->container->has('qce_wordpress.theme.supports'));
+    }
+
+    public function testThemeSupport(): void
+    {
+        $configs = self::DEFAULT_CONFIGS;
+        $configs[] = ['theme' => ['supports' => ['feature']]];
+        $this->extension->load($configs, $this->container);
+        self::assertTrue($this->container->has('qce_wordpress.theme.supports'));
+        $themeSupportsDefinition = $this->container->findDefinition('qce_wordpress.theme.supports');
+        self::assertTrue($themeSupportsDefinition->hasTag('qce_wordpress.hook'));
+    }
+
     public function testTwigBridge(): void
     {
         $twigConfig = [['twig' => true]];
