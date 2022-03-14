@@ -7,6 +7,7 @@ use Qce\WordPressBundle\WordPress\Theme\Cache\ThemeClearerWarmer;
 use Qce\WordPressBundle\WordPress\Theme\Loader\AnnotationClassLoader;
 use Qce\WordPressBundle\WordPress\Theme\Loader\NamespaceLoader;
 use Qce\WordPressBundle\WordPress\Theme\Theme;
+use Qce\WordPressBundle\WordPress\Theme\ThemeSupports;
 use Symfony\Component\Config\Loader\DelegatingLoader;
 use Symfony\Component\Config\Loader\LoaderResolver;
 
@@ -19,6 +20,12 @@ return static function (ContainerConfigurator $container) {
                 service('fragment.handler')->nullOnInvalid(),
             ])
             ->public()
+
+        ->set('qce_wordpress.theme.supports', ThemeSupports::class)
+            ->args([
+                abstract_arg('qce_wordpress.theme.supports'),
+            ])
+            ->tag('qce_wordpress.hook', ['name' => 'setup_theme', 'method' => 'registerThemeSupports', 'accepted_args' => 0])
 
         ->set('qce_wordpress.theme.builder', ThemeBuilder::class)
             ->args([
