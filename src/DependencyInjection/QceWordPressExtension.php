@@ -126,6 +126,13 @@ class QceWordPressExtension extends Extension
         $themeBuilderDefinition->setArgument(3, $themeConfig['annotations']['directory']);
         $themeBuilderDefinition->setArgument(4, $themeConfig['annotations']['namespace']);
         $themeBuilderDefinition->setArgument(5, $themeConfig['static']);
+
+        if (!$themeConfig['supports']) {
+            $container->removeDefinition('qce_wordpress.theme.supports');
+        } else {
+            $themeSupportsDefinition = $container->findDefinition('qce_wordpress.theme.supports');
+            $themeSupportsDefinition->setArgument(0, $themeConfig['supports']);
+        }
     }
 
     /**

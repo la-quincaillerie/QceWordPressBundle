@@ -97,7 +97,9 @@ class ThemeBuilder
 
             if(!defined('ABSPATH') || !isset(\$app)) return; // Prevent direct access
 
-            echo \$app->getContainer()->get('qce_wordpress.theme')->render(CONTROLLER, get_defined_vars());
+            // Pass the global variables and the declared vars as request attributes
+            // in order to inject and resolve them in the controller.
+            echo \$app->getContainer()->get('qce_wordpress.theme')->render(CONTROLLER, \array_merge(\$GLOBALS, get_defined_vars()));
 
             EOF,
             [
@@ -130,4 +132,3 @@ class ThemeBuilder
             ]);
     }
 }
-

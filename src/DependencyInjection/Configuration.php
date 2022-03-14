@@ -44,6 +44,7 @@ use Twig\Environment;
  *      directory: string,
  *   },
  *   static: string,
+ *   supports: array{feature: string, args: mixed}[],
  * }
  * @phpstan-type TwigConfig array{
  *   enabled: bool,
@@ -168,6 +169,8 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->children()
                 ->arrayNode('theme')
+                    ->fixXmlConfig('annotation')
+                    ->fixXmlConfig('support')
                     ->canBeDisabled()
                     ->children()
                         ->scalarNode('slug')->defaultValue('qce-theme')->end()
@@ -179,7 +182,21 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->scalarNode('namespace')->defaultValue('App\\')->end()
-                                ->scalarNode('directory')->defaultValue('%kernel.project_dir%/src')
+                                ->scalarNode('directory')->defaultValue('%kernel.project_dir%/src')->end()
+                            ->end()
+                        ->end()
+                        ->arrayNode('supports')
+                            ->arrayPrototype()
+                                ->beforeNormalization()
+                                    ->ifString()
+                                    ->then(fn ($v) => ['feature' => $v])
+                                ->end()
+                                ->children()
+                                    ->scalarNode('feature')->isRequired()->end()
+                                    ->variableNode('args')->defaultValue([])->end()
+                                ->end()
+                            ->end()
+                        ->end()
         ;
     }
 
